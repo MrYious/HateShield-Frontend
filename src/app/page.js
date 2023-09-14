@@ -55,7 +55,7 @@ export default function Home() {
 	return (
 		<main className="flex flex-col min-h-screen">
 			{/* Hero Section */}
-			<section className="flex flex-col h-screen bg-gray-100">
+			<section className="flex flex-col h-screen bg-zinc-100">
 				{/* Horizontal Nav Bar */}
 				<nav className="flex justify-between py-1 pl-2 pr-2 sm:pl-10">
 					{/* Title & Logo */}
@@ -147,7 +147,7 @@ export default function Home() {
 						</div>
 					</div>
 					{/* Hot Label */}
-					<div className="flex justify-center gap-1 py-3 text-sm bg-zinc-300">
+					<div className="flex justify-center gap-1 py-3 text-sm bg-zinc-200">
 						<span>What is</span>
 						<a href="#about" className="font-semibold text-red-700 ">
 							HateShield
@@ -158,9 +158,10 @@ export default function Home() {
 			</section>
 
 			{/* About Us */}
-			<section id="about" className="flex flex-col items-center gap-3 px-3 py-8 bg-gray-400">
-				<div className="text-2xl font-semibold ">
-					About Us
+			<section id="about" className="flex flex-col items-center gap-5 px-3 py-8 bg-zinc-100">
+				<div className="flex gap-1 text-2xl font-semibold">
+					<div className="">About</div>
+					<div className="text-red-600">Us</div>
 				</div>
 				<div className="flex flex-col w-full gap-3 text-sm sm:w-2/3 md:w-1/2">
 					<div className="text-center ">
@@ -173,9 +174,10 @@ export default function Home() {
 			</section>
 
 			{/* Contact Us & Footer */}
-			<section id="contact" className="flex flex-col items-center h-screen gap-3 pt-8 bg-gray-500">
-				<div className="text-2xl font-semibold ">
-					Contact Us
+			<section id="contact" className="flex flex-col items-center h-screen gap-5 pt-8 bg-zinc-200">
+				<div className="flex gap-1 text-2xl font-semibold ">
+					<div className="">Contact</div>
+					<div className="text-red-600">Us</div>
 				</div>
 				<div className="flex flex-col w-full h-full gap-3 px-3 sm:w-2/3 md:w-1/2">
 					{/* Form */}
@@ -219,7 +221,7 @@ export default function Home() {
 					</div>
 				</div>
 				{/* Footer */}
-				<div className="flex flex-col items-center w-full py-2 text-sm bg-red-200">
+				<div className="flex flex-col items-center w-full py-2 text-sm bg-zinc-300">
 					© 2023 HateShield. All Rights Reserved
 				</div>
 			</section>
