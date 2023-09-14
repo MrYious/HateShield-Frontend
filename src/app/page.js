@@ -117,12 +117,12 @@ export default function Home() {
 							</div>
 						</div>
 					</div>
-					{/* Opener */}
+					{/* Hot Label */}
 					<div className="flex justify-center gap-1 py-3 text-sm bg-zinc-300">
 						<span>What is</span>
-						<span className="text-red-600 ">
+						<a href="#about" className="font-semibold text-red-700 ">
 							HateShield
-						</span>
+						</a>
 						<span>?</span>
 					</div>
 				</div>
