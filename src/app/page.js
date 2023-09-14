@@ -1,14 +1,24 @@
 'use client'
 
 import { MdContentPaste, MdEmail } from "react-icons/md";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
 
 	const [model, setModel] = useState('rule')
 	const [modalHelp, setModalHelp] = useState(false)
-	const [isValidated, setIsValidated] = useState(true)
+	const [isValidated, setIsValidated] = useState(false)
+
+	const [text, setText] = useState('')
+
+	useEffect(() => {
+		if (text.length === 0) {
+			setIsValidated(false)
+		} else {
+			setIsValidated(true)
+		}
+	}, [text])
+
 
 	const switchToRule = () => {
 		setModel('rule')
@@ -17,6 +27,11 @@ export default function Home() {
 	const switchToHybrid = () => {
 		setModel('hybrid')
 	}
+
+	const handlePasteText = async () => {
+        const clipboardData = await navigator.clipboard.readText();
+        setText(clipboardData);
+    }
 
 	return (
 		<main className="flex flex-col min-h-screen">
@@ -73,7 +88,7 @@ export default function Home() {
 									</div>
 								</div>
 								<div className="flex text-sm font-semibold tracking-wide shadow-md shadow-gray-600 rounded-t-md">
-									<div className="px-3 py-2 text-white bg-blue-600 cursor-pointer hover:bg-blue-700 rounded-t-md">
+									<div onClick={()=>{}} className="px-3 py-2 text-white bg-blue-600 cursor-pointer hover:bg-blue-700 rounded-t-md">
 										Help
 									</div>
 								</div>
@@ -83,15 +98,20 @@ export default function Home() {
 								<textarea
 									placeholder="Enter a text here"
 									className="h-full p-3 text-sm bg-white outline-none resize-none rounded-b-md "
+									value={text}
+									onChange={(e)=>{setText(e.target.value)}}
 								></textarea>
-								<button className='absolute top-1/2 left-1/2 gap-2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center p-4 text-blue-900 border-[1px] border-blue-800 hover:bg-blue-800 rounded-md hover:text-blue-50'>
-                                    <MdContentPaste className="text-3xl "/>
-                                    <div className='text-xs '>Paste Text</div>
-                                </button>
+								{
+									text.length === 0 && <button onClick={handlePasteText} className='absolute flex flex-col items-center gap-2 p-4 font-medium text-red-700 transform -translate-x-1/2 -translate-y-1/2 border-2 border-red-700 rounded-md top-1/2 left-1/2 hover:bg-red-700 hover:text-red-50'>
+										<MdContentPaste className="text-3xl "/>
+										<div className='text-xs '>Paste Text</div>
+									</button>
+								}
 							</div>
 							{/* 3 */}
 							<div className="flex justify-end pt-3 text-sm">
-								<button className={`px-8 py-2 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300'} rounded-full shadow-sm shadow-gray-600`}>
+								{/* TODO: ADD CLEAR ALL BUTTON */}
+								<button className={`px-8 py-2 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
 									Evaluate
 								</button>
 							</div>
