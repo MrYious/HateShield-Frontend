@@ -11,6 +11,7 @@ export default function Home() {
 	const [isEmpty, setIsEmpty] = useState(true)
 
 	const [text, setText] = useState('')
+	const [statusMessage, setStatusMessage] = useState('')
 
 	useEffect(() => {
 		if (text.length === 0) {
@@ -20,6 +21,7 @@ export default function Home() {
 			setIsValidated(true)
 			setIsEmpty(false)
 		}
+		setStatusMessage('')
 	}, [text])
 
 
@@ -38,6 +40,16 @@ export default function Home() {
 
 	const handleClearText = () => {
 		setText('');
+	}
+
+	const handleEvaluate = () => {
+		if(isEmpty){
+			setStatusMessage('Please enter text in the field')
+		} else if(!isValidated){
+			setStatusMessage('The text should contain at least 2 words ')
+		} else {
+			
+		}
 	}
 
 	return (
@@ -87,10 +99,10 @@ export default function Home() {
 							{/* 1 */}
 							<div className="flex justify-between">
 								<div className="flex text-sm font-semibold tracking-wide shadow-md shadow-gray-600 rounded-tl-md rounded-tr-md ">
-									<div onClick={switchToRule} className={`p-2 w-28 text-center cursor-pointer rounded-tl-md ${model === 'rule' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-500'} `}>
+									<div onClick={switchToRule} className={`p-2 w-28 text-center cursor-pointer rounded-tl-md ${model === 'rule' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
 										Rule-Based
 									</div>
-									<div onClick={switchToHybrid} className={`p-2 w-28 text-center cursor-pointer rounded-tr-md ${model === 'hybrid' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-500'} `}>
+									<div onClick={switchToHybrid} className={`p-2 w-28 text-center cursor-pointer rounded-tr-md ${model === 'hybrid' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
 										Hybrid
 									</div>
 								</div>
@@ -116,14 +128,19 @@ export default function Home() {
 								}
 							</div>
 							{/* 3 */}
-							<div className={`flex ${isEmpty ? 'justify-end' : 'justify-between'}  pt-3 text-sm`}>
+							<div className={`flex items-center ${!isEmpty || statusMessage ? 'justify-between' : 'justify-end'}  pt-3 text-sm`}>
 								{/* TODO: ADD CLEAR ALL BUTTON */}
 								{
 									!isEmpty && <button onClick={handleClearText} className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
 										Clear All
 									</button>
 								}
-								<button className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
+								{
+									statusMessage && <div className="px-3 border-l-4 border-red-700">
+										{statusMessage}
+									</div>
+								}
+								<button onClick={handleEvaluate} className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
 									Evaluate
 								</button>
 							</div>
