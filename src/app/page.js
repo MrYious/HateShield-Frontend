@@ -8,14 +8,17 @@ export default function Home() {
 	const [model, setModel] = useState('rule')
 	const [modalHelp, setModalHelp] = useState(false)
 	const [isValidated, setIsValidated] = useState(false)
+	const [isEmpty, setIsEmpty] = useState(true)
 
 	const [text, setText] = useState('')
 
 	useEffect(() => {
 		if (text.length === 0) {
 			setIsValidated(false)
+			setIsEmpty(true)
 		} else {
 			setIsValidated(true)
+			setIsEmpty(false)
 		}
 	}, [text])
 
@@ -32,6 +35,10 @@ export default function Home() {
         const clipboardData = await navigator.clipboard.readText();
         setText(clipboardData);
     }
+
+	const handleClearText = () => {
+		setText('');
+	}
 
 	return (
 		<main className="flex flex-col min-h-screen">
@@ -102,16 +109,21 @@ export default function Home() {
 									onChange={(e)=>{setText(e.target.value)}}
 								></textarea>
 								{
-									text.length === 0 && <button onClick={handlePasteText} className='absolute flex flex-col items-center gap-2 p-4 font-medium text-red-700 transform -translate-x-1/2 -translate-y-1/2 border-2 border-red-700 rounded-md top-1/2 left-1/2 hover:bg-red-700 hover:text-red-50'>
+									isEmpty && <button onClick={handlePasteText} className='absolute flex flex-col items-center gap-2 p-4 font-medium text-red-700 transform -translate-x-1/2 -translate-y-1/2 border-2 border-red-700 rounded-md top-1/2 left-1/2 hover:bg-red-700 hover:text-red-50'>
 										<MdContentPaste className="text-3xl "/>
 										<div className='text-xs '>Paste Text</div>
 									</button>
 								}
 							</div>
 							{/* 3 */}
-							<div className="flex justify-end pt-3 text-sm">
+							<div className={`flex ${isEmpty ? 'justify-end' : 'justify-between'}  pt-3 text-sm`}>
 								{/* TODO: ADD CLEAR ALL BUTTON */}
-								<button className={`px-8 py-2 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
+								{
+									!isEmpty && <button onClick={handleClearText} className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
+										Clear All
+									</button>
+								}
+								<button className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
 									Evaluate
 								</button>
 							</div>
