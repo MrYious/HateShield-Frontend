@@ -8,6 +8,7 @@ export default function Home() {
 
 	const [model, setModel] = useState('rule')
 	const [modalHelp, setModalHelp] = useState(false)
+	const [isValidated, setIsValidated] = useState(true)
 
 	const switchToRule = () => {
 		setModel('rule')
@@ -47,7 +48,7 @@ export default function Home() {
 					{/* Title */}
 					<div className="flex flex-col items-center gap-3 p-3">
 						<div className="flex flex-col items-center text-3xl font-medium">
-							<div className="text-red-500 ">
+							<div className="text-red-600 ">
 								Hate Speech
 							</div>
 							<div>
@@ -62,24 +63,23 @@ export default function Home() {
 					<div className="flex flex-col items-center h-full p-3">
 						<div className="flex flex-col w-full h-full sm:w-2/3 md:w-1/2">
 							{/* 1 */}
-							{/* TODO: CREATE STATES FOR THESE */}
 							<div className="flex justify-between">
-								<div className="flex text-sm shadow-md shadow-gray-600 rounded-tl-md rounded-tr-md ">
-									<div onClick={switchToRule} className={`p-2 w-28 text-center cursor-pointer rounded-tl-md ${model === 'rule' ? 'bg-red-400' : 'bg-gray-300 hover:bg-red-500'} `}>
+								<div className="flex text-sm font-semibold tracking-wide shadow-md shadow-gray-600 rounded-tl-md rounded-tr-md ">
+									<div onClick={switchToRule} className={`p-2 w-28 text-center cursor-pointer rounded-tl-md ${model === 'rule' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-500'} `}>
 										Rule-Based
 									</div>
-									<div onClick={switchToHybrid} className={`p-2 w-28 text-center cursor-pointer rounded-tr-md ${model === 'hybrid' ? 'bg-red-400' : 'bg-gray-300 hover:bg-red-500'} `}>
+									<div onClick={switchToHybrid} className={`p-2 w-28 text-center cursor-pointer rounded-tr-md ${model === 'hybrid' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-500'} `}>
 										Hybrid
 									</div>
 								</div>
-								<div className="flex text-sm shadow-md shadow-gray-600">
-									<div className="px-3 py-2 bg-blue-300 cursor-pointer hover:bg-blue-400">
+								<div className="flex text-sm font-semibold tracking-wide shadow-md shadow-gray-600 rounded-t-md">
+									<div className="px-3 py-2 text-white bg-blue-600 cursor-pointer hover:bg-blue-700 rounded-t-md">
 										Help
 									</div>
 								</div>
 							</div>
 							{/* 2 */}
-							<div className="relative flex flex-col h-full border-t-4 border-red-400 shadow-md shadow-gray-600 rounded-b-md">
+							<div className="relative flex flex-col h-full border-t-4 border-red-700 shadow-md shadow-gray-600 rounded-b-md">
 								<textarea
 									placeholder="Enter a text here"
 									className="h-full p-3 text-sm bg-white outline-none resize-none rounded-b-md "
@@ -91,9 +91,9 @@ export default function Home() {
 							</div>
 							{/* 3 */}
 							<div className="flex justify-end pt-3 text-sm">
-								<div className="px-8 py-2 bg-gray-200 rounded-full">
+								<button className={`px-8 py-2 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300'} rounded-full shadow-sm shadow-gray-600`}>
 									Evaluate
-								</div>
+								</button>
 							</div>
 						</div>
 					</div>
