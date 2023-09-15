@@ -42,6 +42,10 @@ export default function Home() {
 		setText('');
 	}
 
+	const handleSend = () => {
+		
+	}
+
 	const handleEvaluate = () => {
 		if(isEmpty){
 			setStatusMessage('Please enter text in the field')
@@ -51,6 +55,8 @@ export default function Home() {
 			
 		}
 	}
+
+	
 
 	return (
 		<main className="flex flex-col min-h-screen">
@@ -158,7 +164,7 @@ export default function Home() {
 			</section>
 
 			{/* About Us */}
-			<section id="about" className="flex flex-col items-center gap-5 px-3 py-8 bg-zinc-100">
+			<section id="about" className="flex flex-col items-center gap-6 px-3 py-8 bg-zinc-100">
 				<div className="flex gap-1 text-2xl font-semibold">
 					<div className="">About</div>
 					<div className="text-red-600">Us</div>
@@ -174,7 +180,7 @@ export default function Home() {
 			</section>
 
 			{/* Contact Us & Footer */}
-			<section id="contact" className="flex flex-col items-center h-screen gap-5 pt-8 bg-zinc-200">
+			<section id="contact" className="flex flex-col items-center h-screen gap-6 pt-8 bg-zinc-200">
 				<div className="flex gap-1 text-2xl font-semibold ">
 					<div className="">Contact</div>
 					<div className="text-red-600">Us</div>
@@ -185,35 +191,35 @@ export default function Home() {
 						<div className="flex gap-2 ">
 							<div className="flex flex-col w-1/2 gap-1">
 								<div className="">First Name *</div>
-								<input type="text" className="px-2 py-3 text-sm rounded-sm outline-none"/>
+								<input type="text" className="px-2 py-3 text-sm rounded-sm outline-none drop-shadow-md "/>
 							</div>
 							<div className="flex flex-col w-1/2 gap-1">
 								<div className="">Last Name *</div>
-								<input type="text" className="px-2 py-3 text-sm rounded-sm outline-none"/>
+								<input type="text" className="px-2 py-3 text-sm rounded-sm outline-none drop-shadow-md"/>
 							</div>
 						</div>
 						<div className="flex flex-col gap-1">
 							<div className="">Email Address *</div>
-							<input type="text" className="px-2 py-3 text-sm rounded-sm outline-none"/>
+							<input type="text" className="px-2 py-3 text-sm rounded-sm outline-none drop-shadow-md"/>
 						</div>
 						<div className="flex flex-col gap-1">
 							<div className="">Subject </div>
-							<input type="text" className="px-2 py-3 text-sm rounded-sm outline-none"/>
+							<input type="text" className="px-2 py-3 text-sm rounded-sm outline-none drop-shadow-md"/>
 						</div>
 						<div className="flex flex-col gap-1">
 							<div className="">Message *</div>
-							<textarea rows={5} className="px-2 py-3 text-sm rounded-sm outline-none resize-none"/>
+							<textarea rows={5} className="px-2 py-3 text-sm rounded-sm outline-none resize-none drop-shadow-md"/>
 						</div>
-						<div className="py-2 text-sm text-center bg-gray-200 rounded-full">
+						<button onClick={handleSend} className="py-2 text-sm font-medium tracking-wider text-center bg-red-700 rounded-full hover:bg-red-800 text-gray-50 drop-shadow-md">
 							Send Message
-						</div>
+						</button>
 					</div>
 
 					{/* Information */}
 					<div className="">
 						<div className="text-lg font-medium">Contact Information</div>
 						<div className="flex items-center gap-2">
-							<MdEmail className="text-3xl " />
+							<MdEmail className="text-3xl text-blue-600 " />
 							<div className="text-sm ">
 								support@hateshield.com
 							</div>
