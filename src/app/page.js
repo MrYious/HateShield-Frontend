@@ -52,11 +52,18 @@ export default function Home() {
 		} else if(!isValidated){
 			setStatusMessage('The text should contain at least 2 words ')
 		} else {
-			
+			fetch('http://localhost:5000/api/')
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+				// Handle the data in your frontend
+			})
+			.catch(error => {
+				console.error(error);
+				// Handle errors gracefully
+			});
 		}
 	}
-
-	
 
 	return (
 		<main className="flex flex-col min-h-screen">
