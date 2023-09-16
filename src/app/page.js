@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
 
-	const [model, setModel] = useState('rule')
+	const [model, setModel] = useState('rule') //rule-hybrid-help
 	const [modalHelp, setModalHelp] = useState(false)
 	const [isValidated, setIsValidated] = useState(false)
 	const [isEmpty, setIsEmpty] = useState(true)
@@ -31,6 +31,10 @@ export default function Home() {
 
 	const switchToHybrid = () => {
 		setModel('hybrid')
+	}
+
+	const switchToHelp = () => {
+		setModel('help')
 	}
 
 	const handlePasteText = async () => {
@@ -120,43 +124,72 @@ export default function Home() {
 									</div>
 								</div>
 								<div className="flex text-sm font-semibold tracking-wide shadow-md shadow-gray-600 rounded-t-md">
-									<div onClick={()=>{}} className="px-3 py-2 text-white bg-blue-600 cursor-pointer hover:bg-blue-700 rounded-t-md">
+									<div onClick={switchToHelp} className={`px-3 py-2 ${model !== 'help' && ' hover:bg-blue-700'} text-white bg-blue-600 cursor-pointer  rounded-t-md`}>
 										Help
 									</div>
 								</div>
 							</div>
 							{/* 2 */}
-							<div className="relative flex flex-col h-full border-t-4 border-red-700 shadow-md shadow-gray-600 rounded-b-md">
-								<textarea
-									placeholder="Enter a text here"
-									className="h-full p-3 text-sm bg-white outline-none resize-none rounded-b-md "
-									value={text}
-									onChange={(e)=>{setText(e.target.value)}}
-								></textarea>
+							<div className={`relative flex flex-col h-full border-t-4 ${model !== 'help'? 'border-red-700' : 'border-blue-600'} shadow-md shadow-gray-600 rounded-b-md`}>
 								{
-									isEmpty && <button onClick={handlePasteText} className='absolute flex flex-col items-center gap-2 p-4 font-medium text-red-700 transform -translate-x-1/2 -translate-y-1/2 border-2 border-red-700 rounded-md top-1/2 left-1/2 hover:bg-red-700 hover:text-red-50'>
+									model !== 'help'
+									?
+										<textarea
+											placeholder="Enter a text here"
+											className="h-full p-3 text-sm bg-white outline-none resize-none rounded-b-md "
+											value={text}
+											onChange={(e)=>{setText(e.target.value)}}
+										></textarea>
+									:
+										<div className="flex flex-col gap-2 p-3 text-sm">
+											<div className="py-2 text-base font-semibold tracking-wider text-center">
+												INSTRUCTIONS
+											</div>
+											<div className="flex flex-col gap-2 leading-relaxed text-justify sm:leading-loose">
+												<div>
+													1. Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque aut ea culpa fuga provident quibusdam ipsum recusandae magni placeat commodi.
+												</div>
+												<div>
+													2. Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident, veniam.
+												</div>
+												<div>
+													3. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dignissimos doloribus explicabo esse harum.
+												</div>
+												<div>
+													4. Lorem ipsum dolor sit amet.
+												</div>
+												<div>
+													5. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus deleniti error neque totam ipsam cumque? Ipsam incidunt at voluptatem unde?
+												</div>
+											</div>
+										</div>
+								}
+								{
+									(isEmpty && model !== 'help') && <button onClick={handlePasteText} className='absolute flex flex-col items-center gap-2 p-4 font-medium text-red-700 transform -translate-x-1/2 -translate-y-1/2 border-2 border-red-700 rounded-md top-1/2 left-1/2 hover:bg-red-700 hover:text-red-50'>
 										<MdContentPaste className="text-3xl "/>
 										<div className='text-xs '>Paste Text</div>
 									</button>
 								}
 							</div>
 							{/* 3 */}
-							<div className={`flex items-center ${!isEmpty || statusMessage ? 'justify-between' : 'justify-end'}  pt-3 text-sm`}>
-								{/* TODO: ADD CLEAR ALL BUTTON */}
-								{
-									!isEmpty && <button onClick={handleClearText} className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
-										Clear All
+							{
+								model !== 'help' && <div className={`flex items-center ${!isEmpty || statusMessage ? 'justify-between' : 'justify-end'}  pt-3 text-sm`}>
+									{
+										!isEmpty && <button onClick={handleClearText} className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
+											Clear All
+										</button>
+									}
+									{
+										statusMessage && <div className="px-3 border-l-4 border-red-700">
+											{statusMessage}
+										</div>
+									}
+									<button onClick={handleEvaluate} className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
+										Evaluate
 									</button>
-								}
-								{
-									statusMessage && <div className="px-3 border-l-4 border-red-700">
-										{statusMessage}
-									</div>
-								}
-								<button onClick={handleEvaluate} className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
-									Evaluate
-								</button>
-							</div>
+								</div>
+							}
+							
 						</div>
 					</div>
 					{/* Hot Label */}
