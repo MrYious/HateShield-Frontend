@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
 
-	const [model, setModel] = useState('rule') //rule-hybrid-help
-	const [modalHelp, setModalHelp] = useState(false)
+	const [mode, setMode] = useState('result') //model-help-result
+	const [model, setModel] = useState('rule') //rule-hybrid
 	const [isValidated, setIsValidated] = useState(false)
 	const [isEmpty, setIsEmpty] = useState(true)
 
@@ -24,17 +24,19 @@ export default function Home() {
 		setStatusMessage('')
 	}, [text])
 
-
 	const switchToRule = () => {
+		setMode('model')
 		setModel('rule')
 	}
 
 	const switchToHybrid = () => {
+		setMode('model')
 		setModel('hybrid')
 	}
 
 	const switchToHelp = () => {
-		setModel('help')
+		setMode('help')
+		setText('')
 	}
 
 	const handlePasteText = async () => {
@@ -51,22 +53,24 @@ export default function Home() {
 	}
 
 	const handleEvaluate = () => {
-		if(isEmpty){
-			setStatusMessage('Please enter text in the field')
-		} else if(!isValidated){
-			setStatusMessage('The text should contain at least 2 words ')
-		} else {
-			fetch('http://localhost:5000/api/')
-			.then(response => response.json())
-			.then(data => {
-				console.log(data);
-				// Handle the data in your frontend
-			})
-			.catch(error => {
-				console.error(error);
-				// Handle errors gracefully
-			});
-		}
+		setMode('result')
+
+		// if(isEmpty){
+		// 	setStatusMessage('Please enter text in the field')
+		// } else if(!isValidated){
+		// 	setStatusMessage('The text should contain at least 2 words ')
+		// } else {
+		// 	fetch('http://localhost:5000/api/')
+		// 	.then(response => response.json())
+		// 	.then(data => {
+		// 		console.log(data);
+		// 		// Handle the data in your frontend
+		// 	})
+		// 	.catch(error => {
+		// 		console.error(error);
+		// 		// Handle errors gracefully
+		// 	});
+		// }
 	}
 
 	return (
@@ -116,10 +120,10 @@ export default function Home() {
 							{/* 1 */}
 							<div className="flex justify-between">
 								<div className="flex text-sm font-semibold tracking-wide shadow-md shadow-gray-600 rounded-tl-md rounded-tr-md ">
-									<div onClick={switchToRule} className={`p-2 w-28 text-center cursor-pointer rounded-tl-md ${model === 'rule' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
+									<div onClick={switchToRule} className={`p-2 w-28 text-center cursor-pointer rounded-tl-md ${mode !== 'help' && model === 'rule' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
 										Rule-Based
 									</div>
-									<div onClick={switchToHybrid} className={`p-2 w-28 text-center cursor-pointer rounded-tr-md ${model === 'hybrid' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
+									<div onClick={switchToHybrid} className={`p-2 w-28 text-center cursor-pointer rounded-tr-md ${mode !== 'help' && model === 'hybrid' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
 										Hybrid
 									</div>
 								</div>
@@ -130,17 +134,19 @@ export default function Home() {
 								</div>
 							</div>
 							{/* 2 */}
-							<div className={`relative flex flex-col h-full border-t-4 ${model !== 'help'? 'border-red-700' : 'border-blue-600'} shadow-md shadow-gray-600 rounded-b-md`}>
+							<div className={`relative flex flex-col h-full border-t-4 ${mode !== 'help'? 'border-red-700' : 'border-blue-600'} shadow-md shadow-gray-600 rounded-b-md`}>
 								{
-									model !== 'help'
+									mode === 'model'
 									?
 										<textarea
-											placeholder="Enter a text here"
-											className="h-full p-3 text-sm bg-white outline-none resize-none rounded-b-md "
+											placeholder="Enter text here"
+											className="h-full p-3 text-sm leading-relaxed bg-white outline-none resize-none rounded-b-md"
 											value={text}
 											onChange={(e)=>{setText(e.target.value)}}
 										></textarea>
 									:
+									mode === 'help'
+									?
 										<div className="flex flex-col gap-2 p-3 text-sm">
 											<div className="py-2 text-base font-semibold tracking-wider text-center">
 												INSTRUCTIONS
@@ -163,9 +169,23 @@ export default function Home() {
 												</div>
 											</div>
 										</div>
+									:
+									mode === 'result'
+									?
+										<div className="flex h-full">
+											<div className="flex w-full p-3">
+												Result
+											</div>
+											<div className="border-2 border-red-700 "></div>
+											<div className="flex w-full p-3 text-center">
+												s
+											</div>
+										</div>
+									:
+										<></>
 								}
 								{
-									(isEmpty && model !== 'help') && <button onClick={handlePasteText} className='absolute flex flex-col items-center gap-2 p-4 font-medium text-red-700 transform -translate-x-1/2 -translate-y-1/2 border-2 border-red-700 rounded-md top-1/2 left-1/2 hover:bg-red-700 hover:text-red-50'>
+									(isEmpty && mode === 'model') && <button onClick={handlePasteText} className='absolute flex flex-col items-center gap-2 p-4 font-medium text-red-700 transform -translate-x-1/2 -translate-y-1/2 border-2 border-red-700 rounded-md top-1/2 left-1/2 hover:bg-red-700 hover:text-red-50'>
 										<MdContentPaste className="text-3xl "/>
 										<div className='text-xs '>Paste Text</div>
 									</button>
@@ -173,7 +193,7 @@ export default function Home() {
 							</div>
 							{/* 3 */}
 							{
-								model !== 'help' && <div className={`flex items-center ${!isEmpty || statusMessage ? 'justify-between' : 'justify-end'}  pt-3 text-sm`}>
+								mode === 'model' && <div className={`flex items-center ${!isEmpty || statusMessage ? 'justify-between' : 'justify-end'}  pt-3 text-sm`}>
 									{
 										!isEmpty && <button onClick={handleClearText} className={`p-2 w-28 text-gray-50 font-semibold tracking-wider ${ isValidated ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-300 text-gray-700'} rounded-full shadow-sm shadow-gray-600`}>
 											Clear All
