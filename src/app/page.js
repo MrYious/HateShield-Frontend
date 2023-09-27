@@ -9,6 +9,7 @@ export default function Home() {
 	const [model, setModel] = useState('rule') //rule-hybrid
 	const [isValidated, setIsValidated] = useState(false)
 	const [isEmpty, setIsEmpty] = useState(true)
+	const [result, setResult] = useState('none') //none-hate-nonhate
 
 	const [text, setText] = useState('')
 	const [statusMessage, setStatusMessage] = useState('')
@@ -53,8 +54,9 @@ export default function Home() {
 	}
 
 	const handleEvaluate = () => {
+		setResult('none')
 		setMode('result')
-
+		setResult('nonhate')
 		// if(isEmpty){
 		// 	setStatusMessage('Please enter text in the field')
 		// } else if(!isValidated){
@@ -172,13 +174,21 @@ export default function Home() {
 									:
 									mode === 'result'
 									?
-										<div className="flex h-full">
-											<div className="flex w-full p-3">
-												Result
+										<div className="flex flex-col h-full p-3 text-center text-md">
+											<div>The tool detected the following content as</div>
+											{
+												result === 'hate' ?
+													<div className="text-lg font-bold text-red-700">HATE SPEECH</div> 
+												: result === 'nonhate' ?
+													<div className="text-lg font-bold text-green-700">NON HATE SPEECH</div> 
+												:
+													<></>
+											}
+											<div className="flex flex-col p-2 mx-10 my-3 bg-gray-300 rounded-md shadow-inner shadow-gray-400">
+												<div className="text-sm ">{text}</div>
 											</div>
-											<div className="border-2 border-red-700 "></div>
-											<div className="flex w-full p-3 text-center">
-												s
+											<div>
+												
 											</div>
 										</div>
 									:
