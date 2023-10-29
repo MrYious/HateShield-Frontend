@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
 
-	const [mode, setMode] = useState('result') //model-help-result
+	const [mode, setMode] = useState('model') //model-help-result
 	const [model, setModel] = useState('rule') //rule-hybrid
 	const [isValidated, setIsValidated] = useState(false)
 	const [isEmpty, setIsEmpty] = useState(true)
@@ -175,18 +175,18 @@ export default function Home() {
 									mode === 'result'
 									?
 										<div className="flex flex-col h-full p-3 text-center text-md">
-											<div>The tool detected the following content as</div>
 											{
 												result === 'hate' ?
-													<div className="text-lg font-bold text-red-700">HATE SPEECH</div> 
+													<div className="text-lg font-bold text-red-700">HATE SPEECH</div>
 												: result === 'nonhate' ?
-													<div className="text-lg font-bold text-green-700">NON HATE SPEECH</div> 
+													<div className="text-lg font-bold text-green-700">NON HATE SPEECH</div>
 												:
 													<></>
 											}
-											<div className="flex flex-col p-2 mx-10 my-3 bg-gray-300 rounded-md shadow-inner shadow-gray-400">
+											<div className="flex flex-col px-2 py-3 mx-0 my-3 bg-gray-300 rounded-md shadow-inner shadow-gray-400">
 												<div className="text-sm ">{text}</div>
 											</div>
+											<div>The tool detected the following content as</div>
 											<div>
 												
 											</div>
@@ -241,10 +241,10 @@ export default function Home() {
 				</div>
 				<div className="flex flex-col w-full gap-3 text-sm sm:w-2/3 md:w-1/2">
 					<div className="text-center ">
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum molestias aliquid modi illum impedit tempora quis magnam dicta fugit aspernatur. Est, aspernatur impedit cupiditate ab corporis numquam voluptatum vero sunt?
+						HateShield is research project aimed to serve as a tool to detect and identify hate-containing texts. Whether you're a content moderator, a concerned user, or a researcher, our tool provides you with a means to identify and mitigate the presence of hate speech in social media posts.
 					</div>
 					<div className="text-center ">
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum molestias aliquid modi illum impedit tempora quis magnam dicta fugit aspernatur. Est, aspernatur impedit cupiditate ab corporis numquam voluptatum vero sunt?
+						We are a passionate team of researchers and our primary goal is to contribute to a safer and more inclusive online environment by enabling the identification and removal of hate-containing statements, fostering a space where users can express themselves freely and respectfully.
 					</div>
 				</div>
 			</section>
