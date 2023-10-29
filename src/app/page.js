@@ -189,22 +189,27 @@ export default function Home() {
 									:
 									mode === 'result'
 									?
-										<div className="flex flex-col h-full p-3 text-center text-md">
+										<div className="flex flex-col justify-center h-full p-3 text-center text-md">
 											{
 												result === 'hate' ?
-													<div className="text-lg font-bold text-red-700">HATE SPEECH</div>
+													<>
+														{/* DO HERE */}
+														<div className="text-lg font-bold text-red-700">HATE SPEECH</div>
+													</>
 												: result === 'nonhate' ?
-													<div className="text-lg font-bold text-green-700">NON HATE SPEECH</div>
+													<>
+														<div>The tool detected the following content as</div>
+														<div className="text-lg font-bold text-green-700">NON HATE SPEECH</div>
+														<div className="flex items-center justify-center h-40 px-2 py-3 mx-0 my-3 text-sm bg-gray-300 rounded-md shadow-inner shadow-gray-400">
+															{text}
+														</div>
+														<div>
+															The statement has been assessed and found to be free from any offensive or derogatory language or content.
+														</div>
+													</>
 												:
 													<></>
 											}
-											<div className="flex flex-col px-2 py-3 mx-0 my-3 bg-gray-300 rounded-md shadow-inner shadow-gray-400">
-												<div className="text-sm ">{text}</div>
-											</div>
-											<div>The tool detected the following content as</div>
-											<div>
-												
-											</div>
 										</div>
 									:
 										<></>
