@@ -168,28 +168,25 @@ export default function Home() {
 													2. <b>Text Input:</b> On the tool page, you will find a designated "Text Area" where you can either type or paste the text you want to evaluate for hate speech. You can input a single sentence or a longer piece of text, as needed.
 												</div>
 												<div>
-													3. <b>Selecting a Model:</b> Our tool offers two different models for hate speech detection. These models may vary in terms of accuracy and specificity. You can choose the model that best suits your requirements by clicking on the model selection dropdown.
+													3. <b>Model Selection:</b> You will see a list of available models as tabs. Simply click on the model you prefer to use for your evaluation.
 												</div>
 												<div>
-													4. <b>Model Selection:</b> After clicking on the model selection dropdown, you will see a list of available models. Simply click on the model you prefer to use for your evaluation. A brief description may be provided to help you choose the most suitable one.
+													4. <b>Initiating the Evaluation:</b> Once you have entered your text and selected a model, click on the "Evaluate" button. This will initiate the process of analyzing the input text to detect any hate-containing statements.
 												</div>
 												<div>
-													5. <b>Initiating the Evaluation:</b> Once you have entered your text and selected a model, click on the "Evaluate" button. This will initiate the process of analyzing the input text to detect any hate-containing statements.
+													5. <b>Processing:</b> The tool will begin processing the text through the selected model. This may take a few moments depending on the length of the text and the model's processing speed.
 												</div>
 												<div>
-													6. <b>Processing:</b> The tool will begin processing the text through the selected model. This may take a few moments depending on the length of the text and the model's processing speed.
+													6. <b>Results Display:</b> As soon as the evaluation is complete, the results will be displayed in a dedicated result screen. You will see whether the text is flagged for hate speech, and if so, to what degree. Additionally, you may receive insights or suggestions based on the model's analysis.
 												</div>
 												<div>
-													7. <b>Results Display:</b> As soon as the evaluation is complete, the results will be displayed in a dedicated result screen. You will see whether the text is flagged for hate speech, and if so, to what degree. Additionally, you may receive insights or suggestions based on the model's analysis.
+													7. <b>Interpreting the Results:</b> The result screen will provide you with a clear indication of whether the text contains hate speech. If the result is affirmative, you may also receive information on specific elements within the text that triggered the detection. This information can be invaluable for understanding and addressing the issue.
 												</div>
 												<div>
-													8. <b>Interpreting the Results:</b> The result screen will provide you with a clear indication of whether the text contains hate speech. If the result is affirmative, you may also receive information on specific elements within the text that triggered the detection. This information can be invaluable for understanding and addressing the issue.
+													8. <b>Taking Action:</b> Based on the results, you can decide on an appropriate course of action. If the text is flagged for hate speech, you can use this information to moderate or address the content as necessary, contributing to a more respectful online environment.
 												</div>
 												<div>
-													9. <b>Taking Action:</b> Based on the results, you can decide on an appropriate course of action. If the text is flagged for hate speech, you can use this information to moderate or address the content as necessary, contributing to a more respectful online environment.
-												</div>
-												<div>
-													10. <b>Feedback and Refinement:</b> We highly value user feedback. If you encounter any issues, have suggestions, or would like to report false positives or negatives, please contact us. This helps us continuously improve the accuracy and effectiveness of our tool.
+													9. <b>Feedback and Refinement:</b> We highly value user feedback. If you encounter any issues, have suggestions, or would like to report false positives or negatives, please contact us. This helps us continuously improve the accuracy and effectiveness of our tool.
 												</div>
 											</div>
 										</div>
