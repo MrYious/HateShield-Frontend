@@ -25,6 +25,11 @@ export default function Home() {
 		setStatusMessage('')
 	}, [text])
 
+	const hasFiveWords = (inputString) => {
+		const words = inputString.split(/\s+/).filter(word => word.trim() !== '');
+		return words.length >= 5;
+	}
+
 	const switchToRule = () => {
 		setMode('model')
 		setModel('rule')
@@ -54,25 +59,27 @@ export default function Home() {
 	}
 
 	const handleEvaluate = () => {
-		setResult('none')
-		setMode('result')
-		setResult('nonhate')
-		// if(isEmpty){
-		// 	setStatusMessage('Please enter text in the field')
-		// } else if(!isValidated){
-		// 	setStatusMessage('The text should contain at least 2 words ')
-		// } else {
-		// 	fetch('http://localhost:5000/api/')
-		// 	.then(response => response.json())
-		// 	.then(data => {
-		// 		console.log(data);
-		// 		// Handle the data in your frontend
-		// 	})
-		// 	.catch(error => {
-		// 		console.error(error);
-		// 		// Handle errors gracefully
-		// 	});
-		// }
+		if(isEmpty){
+			setStatusMessage('Please enter text in the field')
+		} else if(!hasFiveWords(text)){
+			setStatusMessage('The text should contain at least 5 words ')
+		} else {
+			setResult('none')
+			setMode('result')
+			if(model === 'rule'){
+				setResult('nonhate')
+			} else if(model === 'hybrid'){
+				setResult('hate')
+			}
+			// fetch('http://localhost:5000/api/')
+			// .then(response => response.json())
+			// .then(data => {
+			// 	console.log(data);
+			// })
+			// .catch(error => {
+			// 	console.error(error);
+			// });
+		}
 	}
 
 	return (
@@ -113,7 +120,7 @@ export default function Home() {
 							</div>
 						</div>
 						<div className="text-sm ">
-							Detects hate speech, profanity, and offensive language
+							Detects hate speech, profanity, and offensive language in Tagalog-written contents
 						</div>
 					</div>
 					{/* Tool */}
@@ -122,8 +129,8 @@ export default function Home() {
 							{/* 1 */}
 							<div className="flex justify-between">
 								<div className="flex text-sm font-semibold tracking-wide shadow-md shadow-gray-600 rounded-tl-md rounded-tr-md ">
-									<div onClick={switchToRule} className={`p-2 w-28 text-center cursor-pointer rounded-tl-md ${mode !== 'help' && model === 'rule' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
-										Rule-Based
+									<div onClick={switchToRule} className={`p-2 w-52 w w text-center cursor-pointer rounded-tl-md ${mode !== 'help' && model === 'rule' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
+										Logistic Regression
 									</div>
 									<div onClick={switchToHybrid} className={`p-2 w-28 text-center cursor-pointer rounded-tr-md ${mode !== 'help' && model === 'hybrid' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
 										Hybrid
@@ -189,20 +196,31 @@ export default function Home() {
 									:
 									mode === 'result'
 									?
-										<div className="flex flex-col justify-center h-full p-3 text-center text-md">
+										<div className="flex flex-col h-full p-3 text-sm text-center">
 											{
 												result === 'hate' ?
 													<>
 														{/* DO HERE */}
-														<div className="text-lg font-bold text-red-700">HATE SPEECH</div>
+														<div className="pb-2 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
+														<div className="flex items-center gap-2">
+															<div>The tool detected the given content as</div>
+															<div className="text-lg font-bold text-red-700">HATE SPEECH</div>
+														</div>
+														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
+														<div className="mb-2 text-left">The highlighted words are identified as offensive, derogatory words or slurs.  </div>
+														<div className="px-2 py-3 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
+															{text}
+														</div>
 													</>
 												: result === 'nonhate' ?
 													<>
-														<div>The tool detected the following content as</div>
-														<div className="text-lg font-bold text-green-700">NON HATE SPEECH</div>
-														<div className="flex items-center justify-center h-40 px-2 py-3 mx-0 my-3 text-sm bg-gray-300 rounded-md shadow-inner shadow-gray-400">
+														<div className="pb-3 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
+														<div className="px-2 py-3 mx-2 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
 															{text}
 														</div>
+														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
+														<div className="">The following content has been detected as </div>
+														<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
 														<div>
 															The statement has been assessed and found to be free from any offensive or derogatory language or content.
 														</div>
