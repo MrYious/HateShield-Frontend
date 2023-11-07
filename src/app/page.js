@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
 
 	const [mode, setMode] = useState('model') //model-help-result
-	const [model, setModel] = useState('rule') //rule-hybrid
+	const [model, setModel] = useState('logistic') //logistic-hybrid
 	const [isValidated, setIsValidated] = useState(false)
 	const [isEmpty, setIsEmpty] = useState(true)
 	const [result, setResult] = useState('none') //none-hate-nonhate
@@ -30,9 +30,9 @@ export default function Home() {
 		return words.length >= 5;
 	}
 
-	const switchToRule = () => {
+	const switchToLogistic= () => {
 		setMode('model')
-		setModel('rule')
+		setModel('logistic')
 	}
 
 	const switchToHybrid = () => {
@@ -129,7 +129,7 @@ export default function Home() {
 							{/* 1 */}
 							<div className="flex justify-between">
 								<div className="flex text-sm font-semibold tracking-wide shadow-md shadow-gray-600 rounded-tl-md rounded-tr-md ">
-									<div onClick={switchToRule} className={`p-2 w-52 w w text-center cursor-pointer rounded-tl-md ${mode !== 'help' && model === 'rule' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
+									<div onClick={switchToLogistic} className={`p-2 w-52 w w text-center cursor-pointer rounded-tl-md ${mode !== 'help' && model === 'logistic' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
 										Logistic Regression
 									</div>
 									<div onClick={switchToHybrid} className={`p-2 w-28 text-center cursor-pointer rounded-tr-md ${mode !== 'help' && model === 'hybrid' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
