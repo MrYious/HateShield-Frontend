@@ -65,20 +65,67 @@ export default function Home() {
 			setStatusMessage('The text should contain at least 5 words ')
 		} else {
 			setResult('none')
-			setMode('result')
-			if(model === 'rule'){
-				setResult('nonhate')
+			const data = {
+				text
+			};
+			console.log(data);
+
+			if(model === 'logistic'){
+				const url = 'http://localhost:5000/api/logistic'
+				fetch(url, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json', // Specify the data format you're sending
+						// You can include other headers here if needed
+					},
+					body: JSON.stringify(data), // Convert your data to JSON format
+				})
+				.then(response => {
+					if (response.ok) {
+						return response.json(); // Parse the response as JSON
+					} else {
+						throw new Error('Request failed');
+					}
+				})
+				.then(data => {
+					// Handle the response data here
+					console.log(data);
+					setMode('result')
+					setResult('nonhate')
+				})
+				.catch(error => {
+					// Handle any errors that occurred during the fetch
+					console.error(error);
+				});
+
 			} else if(model === 'hybrid'){
-				setResult('hate')
+				const url = 'http://localhost:5000/api/hybrid'
+				fetch(url, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json', // Specify the data format you're sending
+						// You can include other headers here if needed
+					},
+					body: JSON.stringify(data), // Convert your data to JSON format
+				})
+				.then(response => {
+					if (response.ok) {
+						return response.json(); // Parse the response as JSON
+					} else {
+						throw new Error('Request failed');
+					}
+				})
+				.then(data => {
+					// Handle the response data here
+					console.log(data);
+					setMode('result')
+					setResult('hate')
+				})
+				.catch(error => {
+					// Handle any errors that occurred during the fetch
+					console.error(error);
+				});
 			}
-			// fetch('http://localhost:5000/api/')
-			// .then(response => response.json())
-			// .then(data => {
-			// 	console.log(data);
-			// })
-			// .catch(error => {
-			// 	console.error(error);
-			// });
 		}
 	}
 
@@ -197,7 +244,6 @@ export default function Home() {
 											{
 												result === 'hate' ?
 													<>
-														{/* DO HERE */}
 														<div className="pb-2 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
 														<div className="flex items-center gap-2">
 															<div>The tool detected the given content as</div>
@@ -254,7 +300,6 @@ export default function Home() {
 									</button>
 								</div>
 							}
-							
 						</div>
 					</div>
 					{/* Hot Label */}
