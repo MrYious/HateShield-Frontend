@@ -3,10 +3,14 @@
 import { MdContentPaste, MdEmail } from "react-icons/md";
 import { useEffect, useState } from "react";
 
+import { CircularProgressBar } from "react-percentage-bar";
+
 export default function Home() {
 
 	const [mode, setMode] = useState('model') //model-help-result
 	const [model, setModel] = useState('logistic') //logistic-hybrid
+	const [prob0, setProb0] = useState(0.00)
+	const [prob1, setProb1] = useState(0.00)
 	const [isValidated, setIsValidated] = useState(false)
 	const [isEmpty, setIsEmpty] = useState(true)
 	const [result, setResult] = useState('none') //none-hate-nonhate
@@ -14,7 +18,7 @@ export default function Home() {
 	const [text, setText] = useState('')
 	const [statusMessage, setStatusMessage] = useState('')
 
-	useEffect(() => {
+	useEffect(() => { 
 		if (text.length === 0) {
 			setIsValidated(false)
 			setIsEmpty(true)
@@ -24,6 +28,11 @@ export default function Home() {
 		}
 		setStatusMessage('')
 	}, [text])
+
+	useEffect(() => {
+	  setProb0(0.00)
+	  setProb1(0.00)
+	}, [model])
 
 	const hasFiveWords = (inputString) => {
 		const words = inputString.split(/\s+/).filter(word => word.trim() !== '');
@@ -90,8 +99,14 @@ export default function Home() {
 				.then(data => {
 					// Handle the response data here
 					console.log(data);
+					setProb0((data.probability_0 * 100).toFixed(2))
+					setProb1((data.probability_1 * 100).toFixed(2))
+					if (data.prediction === 0) {
+						setResult('nonhate')
+					} else if (data.prediction === 1) {
+						setResult('hate')
+					}
 					setMode('result')
-					setResult('nonhate')
 				})
 				.catch(error => {
 					// Handle any errors that occurred during the fetch
@@ -242,7 +257,63 @@ export default function Home() {
 									?
 										<div className="flex flex-col h-full p-3 text-sm text-center">
 											{
-												result === 'hate' ?
+												result === 'hate' && model === 'logistic' ?
+													<>
+														<div className="pb-3 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
+														<div className="px-2 py-3 mx-2 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
+															{text}
+														</div>
+														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
+														<div className="mb-2">The following content has been detected as </div>
+														<div className="flex items-center justify-center">
+															<CircularProgressBar
+																percentageStyle={{
+																	fontSize: "20px",
+																	fontWeight: "500",
+																	color: "#991b1b",
+																	fontStyle:"normal",
+																}}
+																color={"#991b1b"}
+																percentage={Math.floor(prob1)}
+																size={"10px"}
+																radius={"53px"}
+																shadow={true}
+															/>
+														</div>
+														<div className="py-1 text-lg font-bold text-red-700">HATE SPEECH</div>
+														<div className="px-4">
+															The statement has been assessed and found to be containing offensive or derogatory language or content.
+														</div>
+													</>
+												: result === 'nonhate' && model === 'logistic' ?
+													<>
+														<div className="pb-3 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
+														<div className="px-2 py-3 mx-2 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
+															{text}
+														</div>
+														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
+														<div className="mb-2">The following content has been detected as </div>
+														<div className="flex items-center justify-center">
+															<CircularProgressBar
+																percentageStyle={{
+																	fontSize: "20px",
+																	fontWeight: "500",
+																	color: "#166534",
+																	fontStyle:"normal",
+																}}
+																color={"#166534"}
+																percentage={Math.floor(prob0)}
+																size={"10px"}
+																radius={"53px"}
+																shadow={true}
+															/>
+														</div>
+														<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
+														<div>
+															The statement has been assessed and found to be free from any offensive or derogatory language or content.
+														</div>
+													</>
+												: result === 'hate' && model === 'hybrid' ?
 													<>
 														<div className="pb-2 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
 														<div className="flex items-center gap-2">
@@ -253,19 +324,6 @@ export default function Home() {
 														<div className="mb-2 text-left">The highlighted words are identified as offensive, derogatory words or slurs.  </div>
 														<div className="px-2 py-3 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
 															{text}
-														</div>
-													</>
-												: result === 'nonhate' ?
-													<>
-														<div className="pb-3 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
-														<div className="px-2 py-3 mx-2 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
-															{text}
-														</div>
-														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														<div className="">The following content has been detected as </div>
-														<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
-														<div>
-															The statement has been assessed and found to be free from any offensive or derogatory language or content.
 														</div>
 													</>
 												:
