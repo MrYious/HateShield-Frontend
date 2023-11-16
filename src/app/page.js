@@ -13,7 +13,10 @@ export default function Home() {
 	const [prob1, setProb1] = useState(0.00)
 	const [isValidated, setIsValidated] = useState(false)
 	const [isEmpty, setIsEmpty] = useState(true)
+	const [isLogistic, setIsLogistic] = useState(true)
+	const [hateWords, setHateWords] = useState([]);
 	const [result, setResult] = useState('none') //none-hate-nonhate
+	const [rule, setRule] = useState(1) //1-2
 
 	const [text, setText] = useState('')
 	const [statusMessage, setStatusMessage] = useState('')
@@ -106,6 +109,7 @@ export default function Home() {
 					} else if (data.prediction === 1) {
 						setResult('hate')
 					}
+					setIsLogistic(true)
 					setMode('result')
 				})
 				.catch(error => {
@@ -133,8 +137,28 @@ export default function Home() {
 				.then(data => {
 					// Handle the response data here
 					console.log(data);
+
+					if (data.model === 'logistic') {
+						setIsLogistic(true)
+						setProb0((data.probability_0 * 100).toFixed(2))
+						setProb1((data.probability_1 * 100).toFixed(2))
+						if (data.prediction === 0) {
+							setResult('nonhate')
+						} else if (data.prediction === 1) {
+							setResult('hate')
+						}
+					} else if (data.model === 'rule') {
+						setIsLogistic(false)
+						setRule(data.rule)
+						//
+						if (data.prediction === 0) {
+							setResult('nonhate')
+						} else if (data.prediction === 1) {
+							setResult('hate')
+						}
+					}
+
 					setMode('result')
-					setResult('hate')
 				})
 				.catch(error => {
 					// Handle any errors that occurred during the fetch
@@ -255,65 +279,58 @@ export default function Home() {
 									:
 									mode === 'result'
 									?
-										<div className="flex flex-col h-full p-3 text-sm text-center">
+										<div className="flex flex-col max-h-full p-3 text-sm text-center">
 											{
-												result === 'hate' && model === 'logistic' ?
+												result === 'hate' && isLogistic ?
 													<>
-														<div className="pb-3 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
-														<div className="px-2 py-3 mx-2 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
-															{text}
+														<div className="flex flex-col gap-2 py-2">
+															<div>The following content has been detected as </div>
+															<div className="flex items-center justify-center">
+																<CircularProgressBar
+																	percentageStyle={{
+																		fontSize: "18px",
+																		fontWeight: "500",
+																		color: "#991b1b",
+																		fontStyle:"normal",
+																	}}
+																	color={"#991b1b"}
+																	percentage={Math.floor(prob1)}
+																	size={"10px"}
+																	radius={"40px"}
+																	shadow={true}
+																/>
+															</div>
+															<div className="py-1 text-lg font-bold text-red-700">HATE SPEECH</div>
+															<div>
+																The statement has been assessed and found to be containing offensive, derogatory or discriminatory language.
+															</div>
 														</div>
 														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														<div className="mb-2">The following content has been detected as </div>
-														<div className="flex items-center justify-center">
-															<CircularProgressBar
-																percentageStyle={{
-																	fontSize: "20px",
-																	fontWeight: "500",
-																	color: "#991b1b",
-																	fontStyle:"normal",
-																}}
-																color={"#991b1b"}
-																percentage={Math.floor(prob1)}
-																size={"10px"}
-																radius={"53px"}
-																shadow={true}
-															/>
-														</div>
-														<div className="py-1 text-lg font-bold text-red-700">HATE SPEECH</div>
-														<div className="px-4">
-															The statement has been assessed and found to be containing offensive or derogatory language or content.
-														</div>
-													</>
-												: result === 'nonhate' && model === 'logistic' ?
-													<>
-														<div className="pb-3 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
-														<div className="px-2 py-3 mx-2 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
+														<div className="h-20 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">
 															{text}
 														</div>
-														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														<div className="mb-2">The following content has been detected as </div>
-														<div className="flex items-center justify-center">
-															<CircularProgressBar
-																percentageStyle={{
-																	fontSize: "20px",
-																	fontWeight: "500",
-																	color: "#166534",
-																	fontStyle:"normal",
-																}}
-																color={"#166534"}
-																percentage={Math.floor(prob0)}
-																size={"10px"}
-																radius={"53px"}
-																shadow={true}
-															/>
-														</div>
-														<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
-														<div>
-															The statement has been assessed and found to be free from any offensive or derogatory language or content.
+														<div className="py-1 mx-2 text-xs text-right">
+															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule}`}
 														</div>
 													</>
-												: result === 'hate' && model === 'hybrid' ?
+												: result === 'nonhate' && isLogistic ?
+													<>
+														<div className="flex flex-col gap-2 py-4">
+															<div>The following content has been detected as </div>
+															<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
+															<div>
+																The statement has been assessed and found to be free from any offensive, derogatory or discriminatory language.
+															</div>
+														</div>
+														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
+														<div className="h-40 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">
+															{text}
+														</div>
+														<div className="py-1 mx-2 text-xs text-right">
+															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule}`}
+														</div>
+													</>
+												: result === 'hate' && !isLogistic ?
 													<>
 														<div className="pb-2 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
 														<div className="flex items-center gap-2">
@@ -325,6 +342,7 @@ export default function Home() {
 														<div className="px-2 py-3 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
 															{text}
 														</div>
+														<div>{hateWords.toString}</div>
 													</>
 												:
 													<></>
