@@ -9,32 +9,45 @@ export default function Home() {
 
 	const [mode, setMode] = useState('model') //model-help-result
 	const [model, setModel] = useState('logistic') //logistic-hybrid
-	const [prob0, setProb0] = useState(0.00)
-	const [prob1, setProb1] = useState(0.00)
 	const [isValidated, setIsValidated] = useState(false)
 	const [isEmpty, setIsEmpty] = useState(true)
+	const [text, setText] = useState('')
+	const [textArray, setTextArray] = useState([])
+	const [statusMessage, setStatusMessage] = useState('')
+
 	const [isLogistic, setIsLogistic] = useState(true)
-	const [hateWords, setHateWords] = useState([]);
+	const [prob0, setProb0] = useState(0.00)
+	const [prob1, setProb1] = useState(0.00)
+	const [ruleData, setRuleData] = useState({
+		hateWords: [],
+		negationWords: []
+	});
 	const [result, setResult] = useState('none') //none-hate-nonhate
 	const [rule, setRule] = useState(1) //1-2
 
-	const [text, setText] = useState('')
-	const [statusMessage, setStatusMessage] = useState('')
 
-	useEffect(() => { 
+	useEffect(() => {
 		if (text.length === 0) {
 			setIsValidated(false)
 			setIsEmpty(true)
 		} else {
 			setIsValidated(true)
 			setIsEmpty(false)
+			setTextArray(text.match(/\b\w+\b|[^\w\s]/g) || [])
 		}
 		setStatusMessage('')
 	}, [text])
 
 	useEffect(() => {
-	  setProb0(0.00)
-	  setProb1(0.00)
+		// RESET
+		setResult('none')
+		setProb0(0.00)
+		setProb1(0.00)
+		setRule(1)
+		setRuleData({
+			hateWords: [],
+			negationWords: []
+		})
 	}, [model])
 
 	const hasFiveWords = (inputString) => {
@@ -87,28 +100,29 @@ export default function Home() {
 				fetch(url, {
 					method: 'POST',
 					headers: {
-						'Content-Type': 'application/json', // Specify the data format you're sending
-						// You can include other headers here if needed
+						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(data), // Convert your data to JSON format
+					body: JSON.stringify(data),
 				})
 				.then(response => {
 					if (response.ok) {
-						return response.json(); // Parse the response as JSON
+						return response.json();
 					} else {
 						throw new Error('Request failed');
 					}
 				})
 				.then(data => {
-					// Handle the response data here
 					console.log(data);
+					
 					setProb0((data.probability_0 * 100).toFixed(2))
 					setProb1((data.probability_1 * 100).toFixed(2))
+
 					if (data.prediction === 0) {
 						setResult('nonhate')
 					} else if (data.prediction === 1) {
 						setResult('hate')
 					}
+
 					setIsLogistic(true)
 					setMode('result')
 				})
@@ -122,42 +136,56 @@ export default function Home() {
 				fetch(url, {
 					method: 'POST',
 					headers: {
-						'Content-Type': 'application/json', // Specify the data format you're sending
-						// You can include other headers here if needed
+						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(data), // Convert your data to JSON format
+					body: JSON.stringify(data),
 				})
 				.then(response => {
 					if (response.ok) {
-						return response.json(); // Parse the response as JSON
+						return response.json();
 					} else {
 						throw new Error('Request failed');
 					}
 				})
 				.then(data => {
-					// Handle the response data here
 					console.log(data);
-
+					
 					if (data.model === 'logistic') {
-						setIsLogistic(true)
 						setProb0((data.probability_0 * 100).toFixed(2))
 						setProb1((data.probability_1 * 100).toFixed(2))
+
 						if (data.prediction === 0) {
 							setResult('nonhate')
 						} else if (data.prediction === 1) {
 							setResult('hate')
 						}
+
+						setIsLogistic(true)
+
 					} else if (data.model === 'rule') {
-						setIsLogistic(false)
+
 						setRule(data.rule)
 						//
+						setRuleData({...ruleData, hateWords: data.hate_detected_words })
+						
+						if (rule === 1) {
+							
+						} else if (rule === 2) {
+							
+						} else if (rule === 3) {
+							
+						} else {
+
+						}
+
 						if (data.prediction === 0) {
 							setResult('nonhate')
 						} else if (data.prediction === 1) {
 							setResult('hate')
 						}
-					}
 
+						setIsLogistic(false)
+					}
 					setMode('result')
 				})
 				.catch(error => {
@@ -332,6 +360,39 @@ export default function Home() {
 													</>
 												: result === 'hate' && !isLogistic ?
 													<>
+														<div className="flex flex-col gap-2 py-2">
+															<div>The following content has been detected as </div>
+															<div className="py-1 text-lg font-bold text-red-700">HATE SPEECH</div>
+															<div>
+																The statement has been assessed and found to be containing offensive, derogatory or discriminatory language.
+															</div>
+														</div>
+														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
+														<div className="mb-2 text-left">The highlighted words are identified as hate-containing language.  </div>
+														<div className="h-24 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">															{
+																textArray.map((word, index) => {
+																	const isHighlighted = ruleData.hateWords.includes(word.toLowerCase());
+																	console.log(word, isHighlighted);
+																	return isHighlighted ? (
+																		<>
+																			<span key={index} className="font-bold text-red-800 underline">
+																				{word}
+																			</span>
+																			<span>{' '}</span>
+																	  	</>
+																	) : (
+																	  <span key={index}>{word} </span>
+																	)
+																})
+															}
+														</div>
+														<div className="py-1 mx-2 text-xs text-right">
+															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule}`}
+														</div>
+														{/* <div>{hateWords.toString}</div> */}
+													</>
+												: result === 'nonhate' && !isLogistic ?
+													<>
 														<div className="pb-2 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
 														<div className="flex items-center gap-2">
 															<div>The tool detected the given content as</div>
@@ -342,7 +403,7 @@ export default function Home() {
 														<div className="px-2 py-3 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
 															{text}
 														</div>
-														<div>{hateWords.toString}</div>
+														{/* <div>{hateWords.toString}</div> */}
 													</>
 												:
 													<></>
