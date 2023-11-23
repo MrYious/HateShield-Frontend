@@ -213,11 +213,36 @@ export default function Home() {
 								...ruleData,
 								negation_words_pair: data.negation_words_pair
 							})
+
 						} else if (data.rule === 2) {
+							let result = [];
+							let temp = text
+							let pairs = data.hate_words_pairs
+
+							for (let i = 0; i < pairs.length; i++) {
+								let startWord = pairs[i][0];
+								let endWord = pairs[i][1];
+
+								let startIndex = temp.indexOf(startWord);
+								let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
+
+								if (startIndex !== -1 && endIndex !== -1) {
+									let substring = temp.slice(startIndex, endIndex + endWord.length).trim();
+									result.push(substring);
+
+									// Remove the processed substring from the text to avoid duplicates
+									temp = temp.slice(0, startIndex) + temp.slice(endIndex + endWord.length);
+								}
+							}
+
+							console.log(result);
+
 							setRuleData({
 								...ruleData,
-								hatePairs: data.hate_words_pairs
+								hatePairs: data.hate_words_pairs,
+								display: displayTextSplitter(result, data.rule)
 							})
+
 						} else if (data.rule === 3) {
 							setRuleData({
 								...ruleData,
@@ -428,7 +453,7 @@ export default function Home() {
 																				{value[0]}
 																			</span>
 																		</>
-																	) : value[1] === 3 ? (
+																	) : value[1] === 3 || value[1] === 2 ? (
 																		<>
 																			<span key={index} className="pb-1 font-bold text-red-800 border-b-2 border-red-800 ">
 																				{value[0]}
@@ -475,13 +500,13 @@ export default function Home() {
 																ruleData.display.map((value, index) => {
 																	return value[1] === -1 ? (
 																		<span className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
-																	) : value[1] === 0 ? (
+																	) : value[1] === 0 || value[1] === 1 ?  (
 																		<>
 																			<span key={index} className="pb-1 font-bold text-green-800 border-b-2 border-green-800">
 																				{value[0]}
 																			</span>
 																		</>
-																	) : value[1] === 3 ? (
+																	) : value[1] === 2 || value[1] === 3 ? (
 																		<>
 																			<span key={index} className="pb-1 font-bold text-red-800 border-b-2 border-red-800">
 																				{value[0]}
