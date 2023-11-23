@@ -19,11 +19,14 @@ export default function Home() {
 	const [prob0, setProb0] = useState(0.00)
 	const [prob1, setProb1] = useState(0.00)
 	const [ruleData, setRuleData] = useState({
+		display: [],
+		quotations: [],
+		negation_words_pair: [],
+		hatePairs: [],
 		hateWords: [],
-		negationWords: []
 	});
 	const [result, setResult] = useState('none') //none-hate-nonhate
-	const [rule, setRule] = useState(1) //1-2
+	const [rule, setRule] = useState(0) //0-3
 
 
 	useEffect(() => {
@@ -43,7 +46,7 @@ export default function Home() {
 		setResult('none')
 		setProb0(0.00)
 		setProb1(0.00)
-		setRule(1)
+		setRule(0)
 		setRuleData({
 			hateWords: [],
 			negationWords: []
@@ -53,6 +56,31 @@ export default function Home() {
 	const hasFiveWords = (inputString) => {
 		const words = inputString.split(/\s+/).filter(word => word.trim() !== '');
 		return words.length >= 5;
+	}
+
+	const displayTextSplitter = (subWords, rule) => {
+		console.log(text);
+		console.log(subWords);
+		const regex = new RegExp(subWords.join('|'), 'g');
+		const newText = text.replace(regex, '(/)');
+		console.log(newText);
+		const splitter = newText.split('(/)')
+		console.log(splitter);
+
+		const resultArray = [];
+
+		const maxLength = Math.max(splitter.length, subWords.length);
+		for (let i = 0; i < maxLength; i++) {
+			if (i < splitter.length) {
+				resultArray.push([splitter[i], -1]);
+			}
+			if (i < subWords.length) {
+				resultArray.push([subWords[i], rule]);
+			}
+		}
+
+		console.log(resultArray);
+		return resultArray
 	}
 
 	const switchToLogistic= () => {
@@ -149,7 +177,7 @@ export default function Home() {
 				})
 				.then(data => {
 					console.log(data);
-					
+
 					if (data.model === 'logistic') {
 						setProb0((data.probability_0 * 100).toFixed(2))
 						setProb1((data.probability_1 * 100).toFixed(2))
@@ -165,17 +193,37 @@ export default function Home() {
 					} else if (data.model === 'rule') {
 
 						setRule(data.rule)
-						//
-						setRuleData({...ruleData, hateWords: data.hate_detected_words })
-						
-						if (rule === 1) {
-							
-						} else if (rule === 2) {
-							
-						} else if (rule === 3) {
-							
-						} else {
 
+						// sana mga "bayot" at "pare " hello #example
+						if (data.rule === 0) {
+							const pattern = /["']([^"']*)["']/g
+							const textQuotations = text.match(pattern)
+							const selectedQuotations = data.quotations.map(index => textQuotations[index]);
+							console.log(textQuotations);
+							console.log(selectedQuotations);
+
+							setRuleData({
+								...ruleData,
+								quotations: data.quotations,
+								display: displayTextSplitter(selectedQuotations, data.rule)
+							})
+
+						} else if (data.rule === 1) {
+							setRuleData({
+								...ruleData,
+								negation_words_pair: data.negation_words_pair
+							})
+						} else if (data.rule === 2) {
+							setRuleData({
+								...ruleData,
+								hatePairs: data.hate_words_pairs
+							})
+						} else if (data.rule === 3) {
+							setRuleData({
+								...ruleData,
+								hateWords: data.hate_detected_words,
+								display: displayTextSplitter(data.hate_detected_words, data.rule)
+							})
 						}
 
 						if (data.prediction === 0) {
@@ -361,49 +409,108 @@ export default function Home() {
 												: result === 'hate' && !isLogistic ?
 													<>
 														<div className="flex flex-col gap-2 py-2">
-															<div>The following content has been detected as </div>
+															<div>The following content has been detected as</div>
 															<div className="py-1 text-lg font-bold text-red-700">HATE SPEECH</div>
 															<div>
 																The statement has been assessed and found to be containing offensive, derogatory or discriminatory language.
 															</div>
 														</div>
 														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														<div className="mb-2 text-left">The highlighted words are identified as hate-containing language.  </div>
-														<div className="h-24 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">															{
-																textArray.map((word, index) => {
-																	const isHighlighted = ruleData.hateWords.includes(word.toLowerCase());
-																	console.log(word, isHighlighted);
-																	return isHighlighted ? (
+														<div className="mx-2 mb-2 text-xs text-left">The highlighted words are identified as hate-containing language.  </div>
+														<div className="h-24 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">
+															{
+																ruleData.display.map((value, index) => {
+																	return value[1] === -1 ? (
+																		<span className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
+																	) : value[1] === 0 ? (
 																		<>
-																			<span key={index} className="font-bold text-red-800 underline">
-																				{word}
+																			<span key={index} className="pb-1 font-bold text-green-800 border-b-2 border-green-800">
+																				{value[0]}
 																			</span>
-																			<span>{' '}</span>
-																	  	</>
-																	) : (
-																	  <span key={index}>{word} </span>
-																	)
+																		</>
+																	) : value[1] === 3 ? (
+																		<>
+																			<span key={index} className="pb-1 font-bold text-red-800 border-b-2 border-red-800 ">
+																				{value[0]}
+																			</span>
+																		</>
+																	) : <></>
 																})
 															}
 														</div>
 														<div className="py-1 mx-2 text-xs text-right">
 															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule}`}
 														</div>
-														{/* <div>{hateWords.toString}</div> */}
+														<div className="py-2 mx-5 text-xs">
+															{
+																rule === 0 ?
+																	"This rule checks for the usage of quotations that do not necessarily suggest hate in the statements."
+																:
+																rule === 1 ?
+																	"This rule checks for the usage of negation words that do not necessarily suggest hate in the statements."
+																:
+																rule === 2 ?
+																	"This rule checks for the usage of words that are deemed as offensive language that implies hate towards other person."
+																:
+																rule === 3 ?
+																	"This rule examines the social statement for the presence of words that are deemed as hate-containing language."
+																:
+																	""
+															}
+														</div>
 													</>
 												: result === 'nonhate' && !isLogistic ?
 													<>
-														<div className="pb-2 text-lg font-bold text-left text-gray-800">EVALUATION RESULT</div>
-														<div className="flex items-center gap-2">
-															<div>The tool detected the given content as</div>
-															<div className="text-lg font-bold text-red-700">HATE SPEECH</div>
+														<div className="flex flex-col gap-2 py-2">
+															<div>The following content has been detected as</div>
+															<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
+															<div>
+																The statement has been assessed and found to be containing offensive, derogatory or discriminatory language.
+															</div>
 														</div>
 														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														<div className="mb-2 text-left">The highlighted words are identified as offensive, derogatory words or slurs.  </div>
-														<div className="px-2 py-3 text-sm text-left bg-gray-300 rounded-md shadow-inner justify-left items-left shadow-gray-400">
-															{text}
+														<div className="mx-2 mb-2 text-xs text-left">The highlighted words are identified as hate-containing language.  </div>
+														<div className="h-24 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">												
+															{
+																ruleData.display.map((value, index) => {
+																	return value[1] === -1 ? (
+																		<span className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
+																	) : value[1] === 0 ? (
+																		<>
+																			<span key={index} className="pb-1 font-bold text-green-800 border-b-2 border-green-800">
+																				{value[0]}
+																			</span>
+																		</>
+																	) : value[1] === 3 ? (
+																		<>
+																			<span key={index} className="pb-1 font-bold text-red-800 border-b-2 border-red-800">
+																				{value[0]}
+																			</span>
+																		</>
+																	) : <></>
+																})
+															}
 														</div>
-														{/* <div>{hateWords.toString}</div> */}
+														<div className="py-1 mx-2 text-xs text-right">
+															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule + 1}`}
+														</div>
+														<div className="py-2 mx-5 text-xs">
+															{
+																rule === 0 ?
+																	"This rule checks for the usage of quotations that do not necessarily suggest hate in the statements."
+																:
+																rule === 1 ?
+																	"This rule checks for the usage of negation words that do not necessarily suggest hate in the statements."
+																:
+																rule === 2 ?
+																	"This rule checks for the usage of words that are deemed as offensive language that implies hate towards other person."
+																:
+																rule === 3 ?
+																	"This rule examines the social statement for the presence of words that are deemed as hate-containing language."
+																:
+																	""
+															}
+														</div>
 													</>
 												:
 													<></>
