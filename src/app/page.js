@@ -209,9 +209,32 @@ export default function Home() {
 							})
 
 						} else if (data.rule === 1) {
+							let result = [];
+							let temp = text
+							let pairs = data.negation_words_pair
+
+							for (let i = 0; i < pairs.length; i++) {
+								let startWord = pairs[i][0];
+								let endWord = pairs[i][1];
+
+								let startIndex = temp.indexOf(startWord);
+								let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
+
+								if (startIndex !== -1 && endIndex !== -1) {
+									let substring = temp.slice(startIndex, endIndex + endWord.length).trim();
+									result.push(substring);
+
+									// Remove the processed substring from the text to avoid duplicates
+									temp = temp.slice(0, startIndex) + temp.slice(endIndex + endWord.length);
+								}
+							}
+
+							console.log(result);
+
 							setRuleData({
 								...ruleData,
-								negation_words_pair: data.negation_words_pair
+								negation_words_pair: data.negation_words_pair,
+								display: displayTextSplitter(result, data.rule)
 							})
 
 						} else if (data.rule === 2) {
