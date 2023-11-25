@@ -222,8 +222,8 @@ export default function Home() {
 
 						} else if (data.rule === 1) {
 							let result = [];
-							let temp = text
-							let pairs = data.negation_words_pair
+							let temp = text.toLowerCase();  // Convert the input text to lowercase
+							let pairs = data.negation_words_pair.map(pair => pair.map(word => word.toLowerCase()));  // Convert hate word pairs to lowercase
 
 							for (let i = 0; i < pairs.length; i++) {
 								let startWord = pairs[i][0];
@@ -233,7 +233,7 @@ export default function Home() {
 								let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
 
 								if (startIndex !== -1 && endIndex !== -1) {
-									let substring = temp.slice(startIndex, endIndex + endWord.length).trim();
+									let substring = text.slice(startIndex, endIndex + endWord.length).trim();
 									result.push(substring);
 
 									// Remove the processed substring from the text to avoid duplicates
