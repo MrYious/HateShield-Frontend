@@ -476,7 +476,15 @@ export default function Home() {
 															</div>
 														</div>
 														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														<div className="mx-2 mb-2 text-xs text-left">The highlighted words are identified as hate-containing language.  </div>
+														{
+															rule === 2 ?
+																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are identified as offensive language that are used towards another person.  </div>
+															:
+															rule === 3 ?
+																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are identified as hate-containing language.  </div>
+															:
+																<></>
+														}
 														<div className="h-24 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">
 															{
 																ruleData.display.map((value, index) => {
@@ -529,7 +537,15 @@ export default function Home() {
 															</div>
 														</div>
 														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														<div className="mx-2 mb-2 text-xs text-left">The highlighted words are identified as hate-containing language.  </div>
+														{
+															rule === 0 ?
+																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are assumed to be a quoted statement that doesn't necessarily imply hate </div>
+															:
+															rule === 1 ?
+																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are assumed to be a negated phrase that doesn't necessarily imply hate  </div>
+															:
+																<></>
+														}
 														<div className="h-24 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">												
 															{
 																ruleData.display.map((value, index) => {
