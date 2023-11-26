@@ -61,8 +61,14 @@ export default function Home() {
 	const displayTextSplitter = (subWords, rule) => {
 		console.log(1, text);
 		console.log(2, subWords);
-		const regex = new RegExp(subWords.join('|'), 'gi');
-		const newText = text.replace(regex, '(/)');
+		// const regex = new RegExp(subWords.join('|'), 'gi');
+		// const newText = text.replace(regex, '(/)');
+		let newText = text;
+
+		subWords.forEach(subWord => {
+			const regex = new RegExp(subWord, 'i'); // 'i' for case-insensitive match
+			newText = newText.replace(regex, '(/)');
+		});
 		console.log(3.0, newText);
 
 		const splitter = newText.split('(/)')
@@ -134,7 +140,7 @@ export default function Home() {
 			const data = {
 				text
 			};
-			console.log(data);
+			// console.log(data);
 
 			if(model === 'logistic'){
 				const url = 'http://localhost:5000/api/logistic'
@@ -189,7 +195,7 @@ export default function Home() {
 					}
 				})
 				.then(data => {
-					console.log(data);
+					console.log("RESULT", data);
 
 					if (data.model === 'logistic') {
 						setProb0((data.probability_0 * 100).toFixed(2))
@@ -206,7 +212,7 @@ export default function Home() {
 					} else if (data.model === 'rule') {
 
 						setRule(data.rule)
-
+						//  0 
 						if (data.rule === 0) {
 							const pattern = /["']([^"']*)["']/g
 							const textQuotations = text.match(pattern)
@@ -222,26 +228,35 @@ export default function Home() {
 
 						} else if (data.rule === 1) {
 							let result = [];
-							let temp = text.toLowerCase();  // Convert the input text to lowercase
-							let pairs = data.negation_words_pair.map(pair => pair.map(word => word.toLowerCase()));  // Convert hate word pairs to lowercase
+							let text1 = text.toLowerCase()   // Convert the input text to lowercase
+							let temp = text1;
+							let pairs = data.negation_words_pair.map(pair => pair.map(word => word.toLowerCase()));  // Convert negation word pairs to lowercase
 
 							for (let i = 0; i < pairs.length; i++) {
 								let startWord = pairs[i][0];
 								let endWord = pairs[i][1];
 
 								let startIndex = temp.indexOf(startWord);
-								let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
 
-								if (startIndex !== -1 && endIndex !== -1) {
-									let substring = text.slice(startIndex, endIndex + endWord.length).trim();
-									result.push(substring);
+								while (startIndex !== -1) {
+									let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
 
-									// Remove the processed substring from the text to avoid duplicates
-									temp = temp.slice(0, startIndex) + temp.slice(endIndex + endWord.length);
+									if (endIndex !== -1) {
+										let substring = text1.slice(startIndex, endIndex + endWord.length).trim();
+										result.push(substring);
+
+										// Remove the processed substring from the original text to avoid duplicates
+										text1 = text1.slice(0, startIndex) + text1.slice(endIndex + endWord.length);
+										temp = text1.toLowerCase(); // Update the lowercase version of the text
+										console.log('TEMP', temp);
+									}
+
+									// Look for the next occurrence of the start word
+									startIndex = temp.indexOf(startWord, startIndex + 1);
 								}
 							}
 
-							console.log(result);
+							console.log('RESULT2', result);
 
 							setRuleData({
 								...ruleData,
@@ -251,26 +266,35 @@ export default function Home() {
 
 						} else if (data.rule === 2) {
 							let result = [];
-							let temp = text.toLowerCase();  // Convert the input text to lowercase
-							let pairs = data.hate_words_pairs.map(pair => pair.map(word => word.toLowerCase()));  // Convert hate word pairs to lowercase
+							let text1 = text.toLowerCase()   // Convert the input text to lowercase
+							let temp = text1;
+							let pairs = data.hate_words_pairs.map(pair => pair.map(word => word.toLowerCase()));  // Convert negation word pairs to lowercase
 
 							for (let i = 0; i < pairs.length; i++) {
 								let startWord = pairs[i][0];
 								let endWord = pairs[i][1];
 
 								let startIndex = temp.indexOf(startWord);
-								let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
 
-								if (startIndex !== -1 && endIndex !== -1) {
-									let substring = text.slice(startIndex, endIndex + endWord.length).trim();
-									result.push(substring);
+								while (startIndex !== -1) {
+									let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
 
-									// Remove the processed substring from the text to avoid duplicates
-									temp = temp.slice(0, startIndex) + temp.slice(endIndex + endWord.length);
+									if (endIndex !== -1) {
+										let substring = text1.slice(startIndex, endIndex + endWord.length).trim();
+										result.push(substring);
+
+										// Remove the processed substring from the original text to avoid duplicates
+										text1 = text1.slice(0, startIndex) + text1.slice(endIndex + endWord.length);
+										temp = text1.toLowerCase(); // Update the lowercase version of the text
+										console.log('TEMP', temp);
+									}
+
+									// Look for the next occurrence of the start word
+									startIndex = temp.indexOf(startWord, startIndex + 1);
 								}
 							}
 
-							console.log(result);
+							console.log('RESULT 3', result);
 
 							setRuleData({
 								...ruleData,
@@ -490,7 +514,7 @@ export default function Home() {
 																ruleData.display.map((value, index) => {
 																	return value[1] === -1 ? (
 																		<span className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
-																	) : value[1] === 0 ? (
+																	) : value[1] === 0 || value[1] === 1 ? (
 																		<>
 																			<span key={index} className="pb-1 font-bold text-green-800 border-b-2 border-green-800">
 																				{value[0]}
@@ -550,7 +574,7 @@ export default function Home() {
 															{
 																ruleData.display.map((value, index) => {
 																	return value[1] === -1 ? (
-																		<span className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
+																		<span  className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
 																	) : value[1] === 0 || value[1] === 1 ?  (
 																		<>
 																			<span key={index} className="pb-1 font-bold text-green-800 border-b-2 border-green-800">
