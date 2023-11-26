@@ -61,9 +61,17 @@ export default function Home() {
 	const displayTextSplitter = (subWords, rule) => {
 		console.log(1, text);
 		console.log(2, subWords);
-		// const regex = new RegExp(subWords.join('|'), 'gi');
-		// const newText = text.replace(regex, '(/)');
 		let newText = text;
+		let textQuotations = [];
+
+		if (rule === 3) {
+			const pattern = /["']([^"']*)["']/g;
+
+			newText = newText.replace(pattern, (match, group) => {
+				textQuotations.push(match); // Push the matched quotation to the array
+				return '(|)';
+			});
+		}
 
 		subWords.forEach(subWord => {
 			const regex = new RegExp(subWord, 'i'); // 'i' for case-insensitive match
@@ -96,6 +104,18 @@ export default function Home() {
 			if (i < newSubWord.length) {
 				resultArray.push([newSubWord[i], rule]);
 			}
+		}
+
+		for (let i = 0; i < resultArray.length; i++) {
+			let currentArray = resultArray[i];
+			let currentString = currentArray[0];
+		
+			// Replace each instance of '(|)' with the next value from textQuotations
+			currentArray[0] = currentString.replace(/\(\|\)/g, () => {
+				// Use the next value from textQuotations and remove it
+				let replacement = textQuotations.shift();
+				return replacement || ''; // Use the replacement or an empty string if textQuotations is empty
+			});
 		}
 
 		console.log(resultArray);
@@ -212,7 +232,7 @@ export default function Home() {
 					} else if (data.model === 'rule') {
 
 						setRule(data.rule)
-						//  0 
+						
 						if (data.rule === 0) {
 							const pattern = /["']([^"']*)["']/g
 							const textQuotations = text.match(pattern)
@@ -267,6 +287,10 @@ export default function Home() {
 						} else if (data.rule === 2) {
 							let result = [];
 							let text1 = text.toLowerCase()   // Convert the input text to lowercase
+
+							text1 = text1.replace(/"([^"]*)"/g, '');
+							text1 = text1.replace(/'([^']*)'/g, '');
+
 							let temp = text1;
 							let pairs = data.hate_words_pairs.map(pair => pair.map(word => word.toLowerCase()));  // Convert negation word pairs to lowercase
 
