@@ -533,7 +533,7 @@ export default function Home() {
 															<div>The following content has been detected as</div>
 															<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
 															<div>
-																The statement has been assessed and found to be containing offensive, derogatory or discriminatory language.
+																The statement has been assessed and found to be free from any offensive, derogatory or discriminatory language.
 															</div>
 														</div>
 														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
