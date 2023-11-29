@@ -232,10 +232,14 @@ export default function Home() {
 					} else if (data.model === 'rule') {
 
 						setRule(data.rule)
-						
+
 						if (data.rule === 0) {
-							const pattern = /["']([^"']*)["']/g
-							const textQuotations = text.match(pattern)
+							let newText = text
+							let pattern = /(?<=[a-zA-Z])\'(?=[a-zA-Z])/g;
+							newText = newText.replace(pattern, '');
+							console.log('NewText', newText)
+							pattern = /["']([^"']*)["']/g
+							const textQuotations = newText.match(pattern)
 							const selectedQuotations = data.quotations.map(index => textQuotations[index]);
 							console.log(textQuotations);
 							console.log(selectedQuotations);
