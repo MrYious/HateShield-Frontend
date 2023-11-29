@@ -559,7 +559,7 @@ export default function Home() {
 															}
 														</div>
 														<div className="py-1 mx-2 text-xs text-right">
-															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule}`}
+															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule + 1}`}
 														</div>
 														<div className="py-2 mx-5 text-xs">
 															{
