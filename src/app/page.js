@@ -13,6 +13,7 @@ export default function Home() {
 	const [isEmpty, setIsEmpty] = useState(true)
 	const [text, setText] = useState('')
 	const [statusMessage, setStatusMessage] = useState('')
+	const [countChar, setCountChar] = useState(0)
 
 	const [logisticData, setLogisticData] = useState({
 		prediction: -1,
@@ -45,6 +46,7 @@ export default function Home() {
 			setIsEmpty(false)
 		}
 		setStatusMessage('')
+		setCountChar(text.length)
 	}, [text])
 
 	useEffect(() => {
@@ -173,6 +175,8 @@ export default function Home() {
 			setStatusMessage('Please enter text in the field')
 		} else if(!hasFiveWords(text)){
 			setStatusMessage('The text should contain at least 5 words ')
+		} else if(countChar > 280){
+			setStatusMessage('The text should be less than 280 ')
 		} else {
 			const data = {
 				text
@@ -623,6 +627,11 @@ export default function Home() {
 										<MdContentPaste className="text-3xl "/>
 										<div className='text-xs '>Paste Text</div>
 									</button>
+								}
+								{
+									(mode === 'model') && <div className={` ${countChar > 280 ? 'text-red-700 ' : 'text-green-700 '} absolute flex flex-col items-center gap-2 p-2 font-medium text-sm transform bottom-0 right-0 `}>
+										{countChar} / 280
+									</div>
 								}
 							</div>
 							{/* 3 */}
