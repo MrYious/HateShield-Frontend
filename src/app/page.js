@@ -176,7 +176,7 @@ export default function Home() {
 		} else if(!hasFiveWords(text)){
 			setStatusMessage('The text should contain at least 5 words ')
 		} else if(countChar > 280){
-			setStatusMessage('The text should be less than 280 ')
+			setStatusMessage('The text should be less than 280 characters ')
 		} else {
 			const data = {
 				text
