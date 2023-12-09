@@ -79,8 +79,8 @@ export default function Home() {
 	}
 
 	const displayTextSplitter = (subWords, rule) => {
-		console.log(1, text);
-		console.log(2, subWords);
+		// console.log(1, text);
+		// console.log(2, subWords);
 		let newText = text;
 		let textQuotations = [];
 
@@ -97,10 +97,10 @@ export default function Home() {
 			const regex = new RegExp(subWord, 'i'); // 'i' for case-insensitive match
 			newText = newText.replace(regex, '(/)');
 		});
-		console.log(3.0, newText);
+		// console.log(3.0, newText);
 
 		const splitter = newText.split('(/)')
-		console.log(4, splitter);
+		// console.log(4, splitter);
 
 		let lowerText = text.toLowerCase();
 
@@ -566,15 +566,15 @@ export default function Home() {
 																hybridData.display.map((value, index) => {
 																	return value[1] === -1 ? (
 																		<span className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
-																	) : value[1] === 0 || value[1] === 1 ? (
+																	) : value[1] === 1 || value[1] === 2 ? (
 																		<>
-																			<span key={index} className="pb-1 font-bold text-green-800 border-b-2 border-green-800">
+																			<span key={index} className="pb-1 font-bold text-red-800 border-b-2 border-red-800 ">
 																				{value[0]}
 																			</span>
 																		</>
-																	) : value[1] === 3 || value[1] === 2 ? (
+																	) : value[1] === 3 || value[1] === 4 ? (
 																		<>
-																			<span key={index} className="pb-1 font-bold text-red-800 border-b-2 border-red-800 ">
+																			<span key={index} className="pb-1 font-bold text-green-800 border-b-2 border-green-800">
 																				{value[0]}
 																			</span>
 																		</>
