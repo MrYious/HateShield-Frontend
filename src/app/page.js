@@ -20,17 +20,19 @@ export default function Home() {
 		prob_1: 0,
 	})
 	const [hybridData, setHybridData] = useState({
+		display: [],
+
 		prediction: -1,
+		selected: 'none', //none-both-rule-logreg
+
 		rule: 0,
 		hateWords: [],
 		hatePairs: [],
 		negation_words_pair: [],
 		quotations: [],
-		display: [],
 
 		prob_0: 0,
 		prob_1: 0,
-		model: 0,
 	});
 
 
@@ -53,17 +55,19 @@ export default function Home() {
 			prob_1: 0,
 		})
 		setHybridData({
+			display: [],
+
 			prediction: -1,
+			selected: 'none', //none-both-rule-logreg
+
 			rule: 0,
 			hateWords: [],
 			hatePairs: [],
 			negation_words_pair: [],
 			quotations: [],
-			display: [],
 
 			prob_0: 0,
 			prob_1: 0,
-			model: 0,
 		})
 	}, [model])
 
@@ -224,137 +228,112 @@ export default function Home() {
 				})
 				.then(data => {
 					console.log("RESULT", data);
+					let display = [];
 
-					// if (data.model === 'logistic') {
-					// 	setProb0((data.probability_0 * 100).toFixed(2))
-					// 	setProb1((data.probability_1 * 100).toFixed(2))
+					if (data.rule === 4) {
+						let newText = text
+						let pattern1 = /(?<=[a-zA-Z])\'(?=[a-zA-Z])/g;
+						newText = newText.replace(pattern1, '');
 
-					// 	if (data.prediction === 0) {
-					// 		setResult('nonhate')
-					// 	} else if (data.prediction === 1) {
-					// 		setResult('hate')
-					// 	}
+						let pattern2 = /["']([^"']*)["']/g
+						const textQuotations = newText.match(pattern2)
+						const selectedQuotations = data.quotations.map(index => textQuotations[index]);
+						display = displayTextSplitter(selectedQuotations, data.rule)
 
-					// 	setIsLogistic(true)
+					} else if (data.rule === 3) {
+						let result = [];
+						let text1 = text.toLowerCase()   // Convert the input text to lowercase
+						let temp = text1;
+						let pairs = data.negation_words_pair.map(pair => pair.map(word => word.toLowerCase()));  // Convert negation word pairs to lowercase
 
-					// } else if (data.model === 'rule') {
+						for (let i = 0; i < pairs.length; i++) {
+							let startWord = pairs[i][0];
+							let endWord = pairs[i][1];
 
-					// 	setRule(data.rule)
+							let startIndex = temp.indexOf(startWord);
 
-					// 	if (data.rule === 0) {
-					// 		let newText = text
-					// 		let pattern = /(?<=[a-zA-Z])\'(?=[a-zA-Z])/g;
-					// 		newText = newText.replace(pattern, '');
-					// 		console.log('NewText', newText)
-					// 		pattern = /["']([^"']*)["']/g
-					// 		const textQuotations = newText.match(pattern)
-					// 		const selectedQuotations = data.quotations.map(index => textQuotations[index]);
-					// 		console.log(textQuotations);
-					// 		console.log(selectedQuotations);
+							while (startIndex !== -1) {
+								let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
 
-					// 		setRuleData({
-					// 			...ruleData,
-					// 			quotations: data.quotations,
-					// 			display: displayTextSplitter(selectedQuotations, data.rule)
-					// 		})
+								if (endIndex !== -1) {
+									let substring = text1.slice(startIndex, endIndex + endWord.length).trim();
+									result.push(substring);
 
-					// 	} else if (data.rule === 1) {
-					// 		let result = [];
-					// 		let text1 = text.toLowerCase()   // Convert the input text to lowercase
-					// 		let temp = text1;
-					// 		let pairs = data.negation_words_pair.map(pair => pair.map(word => word.toLowerCase()));  // Convert negation word pairs to lowercase
+									// Remove the processed substring from the original text to avoid duplicates
+									text1 = text1.slice(0, startIndex) + text1.slice(endIndex + endWord.length);
+									temp = text1.toLowerCase(); // Update the lowercase version of the text
+									console.log('TEMP', temp);
+								}
 
-					// 		for (let i = 0; i < pairs.length; i++) {
-					// 			let startWord = pairs[i][0];
-					// 			let endWord = pairs[i][1];
+								// Look for the next occurrence of the start word
+								startIndex = temp.indexOf(startWord, startIndex + 1);
+							}
+						}
 
-					// 			let startIndex = temp.indexOf(startWord);
+						display = displayTextSplitter(result, data.rule)
 
-					// 			while (startIndex !== -1) {
-					// 				let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
+					} else if (data.rule === 2) {
+						let result = [];
+						let text1 = text.toLowerCase()   // Convert the input text to lowercase
 
-					// 				if (endIndex !== -1) {
-					// 					let substring = text1.slice(startIndex, endIndex + endWord.length).trim();
-					// 					result.push(substring);
+						text1 = text1.replace(/"([^"]*)"/g, '');
+						text1 = text1.replace(/'([^']*)'/g, '');
 
-					// 					// Remove the processed substring from the original text to avoid duplicates
-					// 					text1 = text1.slice(0, startIndex) + text1.slice(endIndex + endWord.length);
-					// 					temp = text1.toLowerCase(); // Update the lowercase version of the text
-					// 					console.log('TEMP', temp);
-					// 				}
+						let temp = text1;
+						let pairs = data.hate_words_pairs.map(pair => pair.map(word => word.toLowerCase()));  // Convert negation word pairs to lowercase
 
-					// 				// Look for the next occurrence of the start word
-					// 				startIndex = temp.indexOf(startWord, startIndex + 1);
-					// 			}
-					// 		}
+						for (let i = 0; i < pairs.length; i++) {
+							let startWord = pairs[i][0];
+							let endWord = pairs[i][1];
 
-					// 		console.log('RESULT2', result);
+							let startIndex = temp.indexOf(startWord);
 
-					// 		setRuleData({
-					// 			...ruleData,
-					// 			negation_words_pair: data.negation_words_pair,
-					// 			display: displayTextSplitter(result, data.rule)
-					// 		})
+							while (startIndex !== -1) {
+								let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
 
-					// 	} else if (data.rule === 2) {
-					// 		let result = [];
-					// 		let text1 = text.toLowerCase()   // Convert the input text to lowercase
+								if (endIndex !== -1) {
+									let substring = text1.slice(startIndex, endIndex + endWord.length).trim();
+									result.push(substring);
 
-					// 		text1 = text1.replace(/"([^"]*)"/g, '');
-					// 		text1 = text1.replace(/'([^']*)'/g, '');
+									// Remove the processed substring from the original text to avoid duplicates
+									text1 = text1.slice(0, startIndex) + text1.slice(endIndex + endWord.length);
+									temp = text1.toLowerCase(); // Update the lowercase version of the text
+									console.log('TEMP', temp);
+								}
 
-					// 		let temp = text1;
-					// 		let pairs = data.hate_words_pairs.map(pair => pair.map(word => word.toLowerCase()));  // Convert negation word pairs to lowercase
+								// Look for the next occurrence of the start word
+								startIndex = temp.indexOf(startWord, startIndex + 1);
+							}
+						}
 
-					// 		for (let i = 0; i < pairs.length; i++) {
-					// 			let startWord = pairs[i][0];
-					// 			let endWord = pairs[i][1];
+						display = displayTextSplitter(result, data.rule)
 
-					// 			let startIndex = temp.indexOf(startWord);
+					} else if (data.rule === 1) {
+						display = displayTextSplitter(data.hate_detected_words, data.rule)
+					} else if (data.rule === 5) {
+						display = displayTextSplitter([], data.rule)
+					}
 
-					// 			while (startIndex !== -1) {
-					// 				let endIndex = temp.indexOf(endWord, startIndex + startWord.length);
+					setHybridData({
+						...hybridData,
 
-					// 				if (endIndex !== -1) {
-					// 					let substring = text1.slice(startIndex, endIndex + endWord.length).trim();
-					// 					result.push(substring);
+						display: display,
 
-					// 					// Remove the processed substring from the original text to avoid duplicates
-					// 					text1 = text1.slice(0, startIndex) + text1.slice(endIndex + endWord.length);
-					// 					temp = text1.toLowerCase(); // Update the lowercase version of the text
-					// 					console.log('TEMP', temp);
-					// 				}
+						prediction: data.prediction,
+						selected: data.selected, //none-both-rule-logreg
 
-					// 				// Look for the next occurrence of the start word
-					// 				startIndex = temp.indexOf(startWord, startIndex + 1);
-					// 			}
-					// 		}
+						rule: data.rule,
+						hateWords: data.hate_detected_words,
+						hatePairs: data.hate_words_pairs,
+						negation_words_pair: data.negation_words_pair,
+						quotations: data.quotations,
 
-					// 		console.log('RESULT 3', result);
+						prob_0: (data.probability_0 * 100).toFixed(2),
+						prob_1: (data.probability_1 * 100).toFixed(2),
+					})
 
-					// 		setRuleData({
-					// 			...ruleData,
-					// 			hatePairs: data.hate_words_pairs,
-					// 			display: displayTextSplitter(result, data.rule)
-					// 		})
-
-					// 	} else if (data.rule === 3) {
-					// 		setRuleData({
-					// 			...ruleData,
-					// 			hateWords: data.hate_detected_words,
-					// 			display: displayTextSplitter(data.hate_detected_words, data.rule)
-					// 		})
-					// 	}
-
-					// 	if (data.prediction === 0) {
-					// 		setResult('nonhate')
-					// 	} else if (data.prediction === 1) {
-					// 		setResult('hate')
-					// 	}
-
-					// 	setIsLogistic(false)
-					// }
 					setMode('result')
+					console.log('Hybrid Data',hybridData);
 				})
 				.catch(error => {
 					// Handle any errors that occurred during the fetch
@@ -475,9 +454,9 @@ export default function Home() {
 									:
 									mode === 'result'
 									?
-										<div className="flex flex-col max-h-full p-3 text-sm text-center">
+										<div className="flex flex-col p-3 overflow-y-auto text-sm text-center max-h-96">
 											{
-												// LOGISTIC REGRESSION
+												// LOGISTIC REGRESSION MODEL
 												logisticData.prediction === 1 && model === 'logistic' ?
 													<>
 														<div className="flex flex-col gap-2 py-2">
@@ -532,28 +511,55 @@ export default function Home() {
 											}
 											{
 												// HYBRID CLASSIFICATION MODEL
-												hybridData.prediction === 1 && model === 'hybrid' ?
+												model === 'hybrid' ?
 													<>
 														<div className="flex flex-col gap-2 py-2">
 															<div>The following content has been detected as</div>
-															<div className="py-1 text-lg font-bold text-red-700">HATE SPEECH</div>
-															<div>
-																The statement has been assessed and found to be containing offensive, derogatory or discriminatory language.
-															</div>
+															{
+																(hybridData.selected === 'both' || hybridData.selected === 'logreg') && hybridData.prediction === 1  ?
+																	<div className="flex items-center justify-center">
+																		<CircularProgressBar
+																			percentageStyle={{
+																				fontSize: "18px",
+																				fontWeight: "500",
+																				color: "#991b1b",
+																				fontStyle:"normal",
+																			}}
+																			color={"#991b1b"}
+																			percentage={Math.floor(hybridData.prob_1)}
+																			size={"10px"}
+																			radius={"40px"}
+																			shadow={true}
+																		/>
+																	</div>
+																:
+																	<></>
+															}
+															{
+																hybridData.prediction === 0 ?
+																	<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
+																: hybridData.prediction === 1 ?
+																	<div className="text-lg font-bold text-red-700">HATE SPEECH</div>
+																:
+																	<></>
+															}
+															{
+																hybridData.prediction === 0 ?
+																	<div>
+																		The statement has been assessed and found to be free from any offensive, derogatory or discriminatory language.
+																	</div>
+																: hybridData.prediction === 1 ?
+																	<div>
+																		The statement has been assessed and found to be containing offensive, derogatory or discriminatory language.
+																	</div>
+																:
+																	<></>
+															}
 														</div>
 														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														{
-															rule === 2 ?
-																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are identified as offensive language that are used towards another person.  </div>
-															:
-															rule === 3 ?
-																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are identified as hate-containing language.  </div>
-															:
-																<></>
-														}
 														<div className="h-24 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">
 															{
-																ruleData.display.map((value, index) => {
+																hybridData.display.map((value, index) => {
 																	return value[1] === -1 ? (
 																		<span className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
 																	) : value[1] === 0 || value[1] === 1 ? (
@@ -573,82 +579,33 @@ export default function Home() {
 															}
 														</div>
 														<div className="py-1 mx-2 text-xs text-right">
-															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule + 1}`}
+															{
+																hybridData.selected === 'both' ?
+																	`Model: Hybrid - Rule [${hybridData.rule}] & Logistic`
+																: hybridData.selected === 'rule' ?
+																	`Model: Hybrid - Rule [${hybridData.rule}]`
+																: hybridData.selected === 'logreg' ?
+																	`Model: Hybrid - Logistic`
+																:
+																	<></>
+															}
 														</div>
 														<div className="py-2 mx-5 text-xs">
 															{
-																rule === 0 ?
-																	"This rule checks for the usage of quotations that do not necessarily suggest hate in the statements."
+																hybridData.rule === 1 ?
+																	"This rule examines the statement for the presence of words that are deemed as hate-containing."
 																:
-																rule === 1 ?
-																	"This rule checks for the usage of negation words that do not necessarily suggest hate in the statements."
+																hybridData.rule === 2 ?
+																	"This rule checks for the usage of offensive words that implies hate towards other person."
 																:
-																rule === 2 ?
-																	"This rule checks for the usage of words that are deemed as offensive language that implies hate towards other person."
+																hybridData.rule === 3 ?
+																	"This rule checks for the usage of negation words which not necessarily suggest hate in the statements."
 																:
-																rule === 3 ?
-																	"This rule examines the social statement for the presence of words that are deemed as hate-containing language."
+																hybridData.rule === 4 ?
+																	"This rule checks for the usage of quotations which not necessarily suggest hate in the statements."
 																:
-																	""
-															}
-														</div>
-													</>
-												: hybridData.prediction === 0 && model === 'hybrid' ?
-													<>
-														<div className="flex flex-col gap-2 py-2">
-															<div>The following content has been detected as</div>
-															<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
-															<div>
-																The statement has been assessed and found to be free from any offensive, derogatory or discriminatory language.
-															</div>
-														</div>
-														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														{
-															rule === 0 ?
-																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are assumed to be a quoted statement that doesn't necessarily imply hate </div>
-															:
-															rule === 1 ?
-																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are assumed to be a negated phrase that doesn't necessarily imply hate  </div>
-															:
-																<></>
-														}
-														<div className="h-24 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">												
-															{
-																ruleData.display.map((value, index) => {
-																	return value[1] === -1 ? (
-																		<span  className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
-																	) : value[1] === 0 || value[1] === 1 ?  (
-																		<>
-																			<span key={index} className="pb-1 font-bold text-green-800 border-b-2 border-green-800">
-																				{value[0]}
-																			</span>
-																		</>
-																	) : value[1] === 2 || value[1] === 3 ? (
-																		<>
-																			<span key={index} className="pb-1 font-bold text-red-800 border-b-2 border-red-800">
-																				{value[0]}
-																			</span>
-																		</>
-																	) : <></>
-																})
-															}
-														</div>
-														<div className="py-1 mx-2 text-xs text-right">
-															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule + 1}`}
-														</div>
-														<div className="py-2 mx-5 text-xs">
-															{
-																rule === 0 ?
-																	"This rule checks for the usage of quotations that do not necessarily suggest hate in the statements."
-																:
-																rule === 1 ?
-																	"This rule checks for the usage of negation words that do not necessarily suggest hate in the statements."
-																:
-																rule === 2 ?
-																	"This rule checks for the usage of words that are deemed as offensive language that implies hate towards other person."
-																:
-																rule === 3 ?
-																	"This rule examines the social statement for the presence of words that are deemed as hate-containing language."
+																hybridData.rule === 5 ?
+																	"The default rule, the text didn't match to any rules that implies the use of hate speech"
 																:
 																	""
 															}
