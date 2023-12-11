@@ -645,19 +645,19 @@ export default function Home() {
 														</div>
 														<div className="py-2 mx-5 text-xs">
 															{
-																hybridData.rule === 1 && hybridData.prediction === 1?
+																hybridData.rule === 1 ?
 																	"This rule examines the statement for the presence of words that are deemed as hate-containing."
 																:
-																hybridData.rule === 2 && hybridData.prediction === 1?
-																	"This rule checks for the usage of offensive words that implies hate towards another person."
+																hybridData.rule === 2 ?
+																	"This rule checks for the usage of offensive words that implies hate towards other person."
 																:
-																hybridData.rule === 3 && hybridData.prediction === 0 ?
+																hybridData.rule === 3 ?
 																	"This rule checks for the usage of negation words which not necessarily suggest hate in the statements."
 																:
-																hybridData.rule === 4 && hybridData.prediction === 0 ?
+																hybridData.rule === 4 ?
 																	"This rule checks for the usage of quotations which not necessarily suggest hate in the statements."
 																:
-																hybridData.rule === 5 && hybridData.prediction === 0 ?
+																hybridData.rule === 5 ?
 																	"The default rule, the text didn't match to any rules that implies the use of hate speech"
 																:
 																	""
