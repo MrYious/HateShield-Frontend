@@ -572,56 +572,7 @@ export default function Home() {
 																				{value[0]}
 																			</span>
 																		</>
-																	) : <></>
-																})
-															}
-														</div>
-														<div className="py-1 mx-2 text-xs text-right">
-															Model: {isLogistic ? 'Logistic Regression' : `Rule-Based #${rule + 1 }`}
-														</div>
-														<div className="py-2 mx-5 text-xs">
-															{
-																rule === 0 ?
-																	"This rule checks for the usage of quotations that do not necessarily suggest hate in the statements."
-																:
-																rule === 1 ?
-																	"This rule checks for the usage of negation words that do not necessarily suggest hate in the statements."
-																:
-																rule === 2 ?
-																	"This rule checks for the usage of words that are deemed as offensive language that implies hate towards other person."
-																:
-																rule === 3 ?
-																	"This rule examines the social statement for the presence of words that are deemed as hate-containing language."
-																:
-																	""
-															}
-														</div>
-													</>
-												: result === 'nonhate' && !isLogistic ?
-													<>
-														<div className="flex flex-col gap-2 py-2">
-															<div>The following content has been detected as</div>
-															<div className="py-1 text-lg font-bold text-green-700">NON HATE SPEECH</div>
-															<div>
-																The statement has been assessed and found to be free from any offensive, derogatory or discriminatory language.
-															</div>
-														</div>
-														<div className="w-full my-4 border-2 border-gray-700 rounded-md "></div>
-														{
-															rule === 0 ?
-																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are assumed to be a quoted statement that doesn't necessarily imply hate </div>
-															:
-															rule === 1 ?
-																<div className="mx-2 mb-2 text-xs text-left">The highlighted words are assumed to be a negated phrase that doesn't necessarily imply hate  </div>
-															:
-																<></>
-														}
-														<div className="h-24 px-2 py-3 mx-2 overflow-y-auto text-sm text-left bg-gray-300 rounded-md shadow-inner shadow-gray-400">												
-															{
-																ruleData.display.map((value, index) => {
-																	return value[1] === -1 ? (
-																		<span  className="pb-1 border-b-2 border-transparent" key={index}>{value[0]}</span>
-																	) : value[1] === 0 || value[1] === 1 ?  (
+																	) : value[1] === 3 || value[1] === 4 ? (
 																		<>
 																			<span key={index} className="pb-1 font-bold text-green-800 border-b-2 border-green-800">
 																				{value[0]}
