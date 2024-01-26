@@ -398,7 +398,7 @@ export default function Home() {
 										Logistic Regression
 									</div>
 									<div onClick={switchToHybrid} className={`p-2 w-28 text-center cursor-pointer rounded-tr-md ${mode !== 'help' && model === 'hybrid' ? 'bg-red-700 text-white' : 'bg-gray-300 hover:bg-red-300'} `}>
-										Hybrid
+										Ensemble
 									</div>
 								</div>
 								<div className="flex text-sm font-semibold tracking-wide shadow-md shadow-gray-600 rounded-t-md">
@@ -585,11 +585,11 @@ export default function Home() {
 														<div className="py-1 mx-2 text-xs text-right">
 															{
 																hybridData.selected === 'both' ?
-																	`Model: Hybrid - Rule [${hybridData.rule}] & Logistic`
+																	`Model: Ensemble - Rule [${hybridData.rule}] & Logistic`
 																: hybridData.selected === 'rule' ?
-																	`Model: Hybrid - Rule [${hybridData.rule}]`
+																	`Model: Ensemble - Rule [${hybridData.rule}]`
 																: hybridData.selected === 'logreg' ?
-																	`Model: Hybrid - Logistic`
+																	`Model: Ensemble - Logistic`
 																:
 																	<></>
 															}
