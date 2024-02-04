@@ -421,16 +421,16 @@ export default function Home() {
 													1. <b>Accessing the Tool:</b> Upon entering the website, the Hate Speech Detection Tool section will be directly shown to the users.
 												</div>
 												<div>
-													2. <b>Text Input:</b> On the tool page, you will find a designated "Text Area" where you can either type or paste the text you want to evaluate for hate speech. You can input a single sentence or a longer piece of text, as needed. A requirement of at least 5 words for the input ensures the inclusion of ample features.
+													2. <b>Text Input:</b> On the tool page, you will find a designated &quot;Text Area&quot; where you can either type or paste the text you want to evaluate for hate speech. You can input a single sentence or a longer piece of text, as needed. A requirement of at least 5 words for the input ensures the inclusion of ample features.
 												</div>
 												<div>
 													3. <b>Model Selection:</b> The top-left corner of the tool displays a selection of available models. Simply click on the model you prefer to use in evaluating your text input.
 												</div>
 												<div>
-													4. <b>Initiating the Evaluation:</b> Once you have entered your text and selected a model, click on the "Evaluate" button. This will initiate the process of analyzing the input text to detect hate-containing statements.
+													4. <b>Initiating the Evaluation:</b> Once you have entered your text and selected a model, click on the &quot;Evaluate&quot; button. This will initiate the process of analyzing the input text to detect hate-containing statements.
 												</div>
 												<div>
-													5. <b>Processing:</b> The tool will begin processing the text through the selected model. This may take a few moments depending on the length of the text and the model's processing speed.
+													5. <b>Processing:</b> The tool will begin processing the text through the selected model. This may take a few moments depending on the length of the text and the model&apos;s processing speed.
 												</div>
 												<div>
 													6. <b>Results Display:</b> As soon as the evaluation is complete, the results will be displayed in a dedicated result screen. You will see whether the text is flagged for hate speech, and if so, to what degree.
@@ -664,7 +664,7 @@ export default function Home() {
 				</div>
 				<div className="flex flex-col w-full gap-3 text-sm sm:w-2/3 md:w-1/2">
 					<div className="text-center ">
-						HateShield is research project aimed to serve as a tool to detect and identify hate-containing texts. Whether you're a content moderator, a concerned user, or a researcher, our tool provides you with a means to identify and mitigate the presence of hate speech in social media posts.
+						HateShield is research project aimed to serve as a tool to detect and identify hate-containing texts. Whether you&apos;re a content moderator, a concerned user, or a researcher, our tool provides you with a means to identify and mitigate the presence of hate speech in social media posts.
 					</div>
 					<div className="text-center ">
 						We are a passionate team of researchers and our primary goal is to contribute to a safer and more inclusive online environment by enabling the identification and removal of hate-containing statements, fostering a space where users can express themselves freely and respectfully.
