@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 
 import { CircularProgressBar } from "react-percentage-bar";
 
+// Hybrid == Ensemble
+
 export default function Home() {
 
 	const [mode, setMode] = useState('model') 			//model-help-result
@@ -20,6 +22,7 @@ export default function Home() {
 		prob_0: 0,
 		prob_1: 0,
 	})
+
 	const [hybridData, setHybridData] = useState({
 		display: [],
 
@@ -35,7 +38,6 @@ export default function Home() {
 		prob_0: 0,
 		prob_1: 0,
 	});
-
 
 	useEffect(() => {
 		if (text.length === 0) {
@@ -79,8 +81,6 @@ export default function Home() {
 	}
 
 	const displayTextSplitter = (subWords, rule) => {
-		// console.log(1, text);
-		// console.log(2, subWords);
 		let newText = text;
 		let textQuotations = [];
 
@@ -97,10 +97,8 @@ export default function Home() {
 			const regex = new RegExp(subWord, 'i'); // 'i' for case-insensitive match
 			newText = newText.replace(regex, '(/)');
 		});
-		// console.log(3.0, newText);
 
 		const splitter = newText.split('(/)')
-		// console.log(4, splitter);
 
 		let lowerText = text.toLowerCase();
 
@@ -112,7 +110,6 @@ export default function Home() {
 				newSubWord.push(text.substr(index, subWords[i].length));
 			}
 		}
-		console.log(5, newSubWord);
 
 		const resultArray = [];
 
@@ -129,7 +126,7 @@ export default function Home() {
 		for (let i = 0; i < resultArray.length; i++) {
 			let currentArray = resultArray[i];
 			let currentString = currentArray[0];
-		
+
 			// Replace each instance of '(|)' with the next value from textQuotations
 			currentArray[0] = currentString.replace(/\(\|\)/g, () => {
 				// Use the next value from textQuotations and remove it
@@ -138,7 +135,6 @@ export default function Home() {
 			});
 		}
 
-		console.log(resultArray);
 		return resultArray
 	}
 
@@ -166,9 +162,7 @@ export default function Home() {
 		setText('');
 	}
 
-	const handleSend = () => {
-		//
-	}
+	const handleSend = () => {}
 
 	const handleEvaluate = () => {
 		if(isEmpty){
@@ -199,7 +193,6 @@ export default function Home() {
 					}
 				})
 				.then(data => {
-					console.log("RESULT", data);
 
 					setLogisticData({
 						...logisticData,
@@ -231,7 +224,6 @@ export default function Home() {
 					}
 				})
 				.then(data => {
-					console.log("RESULT", data);
 					let display = [];
 
 					if (data.rule === 4) {
@@ -337,7 +329,6 @@ export default function Home() {
 					})
 
 					setMode('result')
-					console.log('Hybrid Data',hybridData);
 				})
 				.catch(error => {
 					// Handle any errors that occurred during the fetch
